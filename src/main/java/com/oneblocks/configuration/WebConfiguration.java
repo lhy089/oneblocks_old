@@ -23,4 +23,14 @@ public class WebConfiguration implements WebMvcConfigurer {
 		source.setUseCodeAsDefaultMessage(true);
 		return source;
 	}
+	
+	@Bean
+	public BaseHandlerInterceptor baseHandlerInterceptor() {
+		return new BaseHandlerInterceptor();
+	}
+	
+	@Override
+	public void addInterceptors(InterceptorRegistry registry) {
+		registry.addInterceptor(baseHandlerInterceptor());
+	}
 }
