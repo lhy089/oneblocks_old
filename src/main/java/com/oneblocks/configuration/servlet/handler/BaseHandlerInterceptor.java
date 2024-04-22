@@ -15,7 +15,7 @@ public class BaseHandlerInterceptor implements HandlerInterceptor{
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 		logger.info("preHandle requestURI : {}", request.getRequestURI());
-		return false;
+		return true;
 	}
 	
 	@Override
