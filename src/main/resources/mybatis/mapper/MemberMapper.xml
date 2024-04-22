@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.oneblocks.repository.MemberRepository">
+
+	<select id="getList" parameterType="com.oneblocks.domain.Member" resultType="com.oneblocks.domain.Member">
+		SELECT 
+			M.MEMBER_ID
+		FROM MEMBER M
+	</select>
+
+</mapper>
