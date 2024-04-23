@@ -2,6 +2,7 @@ package com.oneblocks.configuration;
 
 import java.util.Locale;
 
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
@@ -27,6 +28,14 @@ public class WebConfiguration implements WebMvcConfigurer {
 	@Bean
 	public BaseHandlerInterceptor baseHandlerInterceptor() {
 		return new BaseHandlerInterceptor();
+	}
+	
+	@Bean
+	public FilterRegistrationBean<SitemeshConfiguration> sitemeshFilter() {
+		FilterRegistrationBean<SitemeshConfiguration> filter = new FilterRegistrationBean<SitemeshConfiguration>();
+		filter.setFilter(new SitemeshConfiguration());
+		return filter;
+		
 	}
 	
 	@Override
