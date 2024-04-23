@@ -6,6 +6,5 @@
 	<title>원블록스</title>
 </head>
 <body>
-	spring boot3 - jsp 연동
 </body>
 </html>
