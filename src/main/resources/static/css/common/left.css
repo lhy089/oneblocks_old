@@ -22,11 +22,18 @@
 	font-weight: bold;
 }
 
-
+#layoutSidenav_nav {
+	width: 23%;
+    max-width: 350px;
+    min-width: 200px;
+}
 
 #campaignNameList {
 	width: 100%; 
-	height: 80%;
+/* 	height: 80%; */
+	height: 80vh;
+    overflow-y: auto;
+    margin-top: 10px;
 }
 
 #campaignNameList ul {
@@ -36,4 +43,5 @@
 #campaignNameList ul>li {
 	list-style-type: none; 
 	line-height: 40px;
+	padding-top: 7px;
 }
