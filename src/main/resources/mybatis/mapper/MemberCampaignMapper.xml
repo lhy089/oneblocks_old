@@ -3,7 +3,7 @@
 
 <mapper namespace="com.oneblocks.repository.CampaignRepository">
 
-	<select id="getList" parameterType="com.oneblocks.domain.MemberCampaign" resultType="com.oneblocks.domain.MemberCampaign">
+	<select id="getList" parameterType="com.oneblocks.domain.Member" resultType="com.oneblocks.domain.MemberCampaign">
 		SELECT  
 			MC.CAMPAIGN_ID					as campaignId
 			, MC.MEMBER_CAMPAIGN_NAME 		as memberCampaignName

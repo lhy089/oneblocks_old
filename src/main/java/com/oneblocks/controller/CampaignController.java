@@ -8,6 +8,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.oneblocks.configuration.RequestConfiguration;
 import com.oneblocks.domain.Member;
 import com.oneblocks.domain.MemberCampaign;
 import com.oneblocks.service.CampaignService;
@@ -25,10 +26,11 @@ public class CampaignController {
 	private CampaignService campaignService;
 	
 	@GetMapping("/main")
+	@RequestConfiguration
 	@Operation(summary = "메인 화면", description = "캠페인 판매량 화면을 조회한다")
 	public void main(HttpSession session, Model model) {
-		String memberId = ((Member) session.getAttribute("loginMemberInfo")).getMemberId();
-		List<MemberCampaign> myCampaignList = campaignService.getList();
+		Member member = (Member) session.getAttribute("loginMemberInfo");
+		List<MemberCampaign> myCampaignList = campaignService.getList(member);
 		model.addAttribute("myCampaignList", myCampaignList);
 	}
 }

@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.oneblocks.domain.Member;
 import com.oneblocks.domain.MemberCampaign;
 import com.oneblocks.repository.CampaignRepository;
 
@@ -18,10 +19,8 @@ public class CampaignService {
 	private CampaignRepository repository;
 	
 	
-	public List<MemberCampaign> getList() {
-		MemberCampaign memberCampaign = new MemberCampaign();
-		memberCampaign.setMemberId("M12345678");
-		return repository.getList(memberCampaign);
+	public List<MemberCampaign> getList(Member member) {
+		return repository.getList(member);
 	}
 	
 }
