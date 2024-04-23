@@ -1,0 +1,39 @@
+@charset "UTF-8";
+
+.custom-sidenav-menu {
+	padding: 20px 10px;
+}
+
+.custom-nav {
+	height: 100%;
+}
+
+#leftNav-title {
+	width: 100%; 
+	padding: 8px 10px 8px 10px; 
+	text-align: left; 
+	height: 40px; 
+	border-radius: 10px; 
+	background-color: #EEF1F4;
+}
+
+#leftNav-title p{
+	font-size: 15px; 
+	font-weight: bold;
+}
+
+
+
+#campaignNameList {
+	width: 100%; 
+	height: 80%;
+}
+
+#campaignNameList ul {
+	padding-left: 10%;
+}
+
+#campaignNameList ul>li {
+	list-style-type: none; 
+	line-height: 40px;
+}
