@@ -3,10 +3,26 @@
 
 <mapper namespace="com.oneblocks.repository.MemberRepository">
 
+	<select id="get" parameterType="com.oneblocks.parameter.MemberLoginParam" resultType="com.oneblocks.domain.Member">
+		SELECT 
+      		  MEMBER_ID			as memberId 
+			, EMAIL				as email
+			, USER_STATUS		as memberStatus
+		FROM 
+			MEMBER 
+		WHERE 
+			EMAIL = #{email}
+			AND PASSWORD = #{password}
+			AND USER_STATUS != 'D'
+	</select>
+	
 	<select id="getList" parameterType="com.oneblocks.domain.Member" resultType="com.oneblocks.domain.Member">
 		SELECT 
 			M.MEMBER_ID
 		FROM MEMBER M
+		<if test="@org.apache.commons.lang3.StringUtil@isNotEmpty(keyword)">
+		where 1=1
+		</if>
 	</select>
 
 </mapper>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.oneblocks.repository.CampaignRepository">
+
+	<select id="getList" parameterType="com.oneblocks.domain.MemberCampaign" resultType="com.oneblocks.domain.MemberCampaign">
+		SELECT  
+			MC.CAMPAIGN_ID					as campaignId
+			, MC.MEMBER_CAMPAIGN_NAME 		as memberCampaignName
+			, MC.ON_OFF_YN					as onOffYn
+		FROM MEMBER_CAMPAIGN MC
+		WHERE MC.MEMBER_ID = #{memberId}
+		ORDER BY MC.MEMBER_CAMPAIGN_NAME
+	</select>
+
+</mapper>

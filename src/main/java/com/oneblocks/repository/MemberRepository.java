@@ -1,20 +1,13 @@
 package com.oneblocks.repository;
 
-import java.util.List;
-
 import org.springframework.stereotype.Repository;
 
 import com.oneblocks.domain.Member;
+import com.oneblocks.parameter.MemberLoginParam;
 
 @Repository
 public interface MemberRepository {
 	
-	List<Member> getList();
-	
-	Member get(String memberId);
-	
-	void update(Member member);
-	
-	void delete(String memberId);
+	Member get(MemberLoginParam memberLoginParam);
 
 }

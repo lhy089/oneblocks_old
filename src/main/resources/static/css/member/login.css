@@ -1,0 +1,85 @@
+@charset "utf-8";
+/* CSS Document */
+
+div#mainForm {
+   position: absolute;
+   width:350px;
+   height:auto;
+   background-color: #fff;  
+   margin:auto;
+   border-radius: 5px;
+   padding:20px;
+   top:10%;
+   left:50%;
+   margin-left:-200px;
+   opacity : 0.9;
+   padding-bottom: 50px;
+   border : solid 1px;
+}
+
+div.mainLogo {
+	text-align: center;
+}
+
+div#loginForm {
+	text-align: center;
+	margin-top: 70px;
+}
+
+div.login-item {
+	position: relative;
+    text-align: center;
+}
+
+p.login-label {
+	position: absolute;
+    left: 30px;
+    font-weight: bold;
+    color: #bbb;
+}
+
+input.login-input {
+	width: 85%;
+    height: 40px;
+    border: 1px solid lightgray;
+    border-radius: 10px;
+    padding: 5px 5%;
+    margin-bottom: 40px;
+}
+
+div.login-sub-item {
+    position: relative;
+	text-align: left;
+	
+}
+
+.pull-left {
+    position: absolute;
+    top: 60px;
+}
+
+.pull-right {
+	float: right;
+}
+
+div.login-sub-item a {
+	font-size: 13px;
+    font-weight: bold;
+    text-decoration: none;
+    margin-left: 20px;
+    color: #085cd1;
+}
+
+.login {
+    width: 120px;
+    height: 30px;
+	font-weight: bold;
+    font-size: 17px;
+    color: white;
+    background-color: #9ebfed;
+    border-radius: 10px;
+    border: 1px solid lightgray;
+}
+
+.formTop {top:-40px !important; left:10px !important;  padding:0 5px; font-size: 16px; font-weight:bold; color:#085cd1 !important;}
+
