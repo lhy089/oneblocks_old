@@ -23,3 +23,11 @@
 	</nav>
 </div>
 <!-- 사이드바 -->
+
+<script id="leftTemplate" type="x-tmpl-mustache">
+<ul>
+{{#myCampaignList}}
+	<li><a  {{^onOffYn}} style="color:lightgray;" {{/onOffYn}} href="/campaign/productList?campaignId={{campaignId}}&pageNum=1" data-campaign-id='{{campaignId}}'> {{memberCampaignName}}</a></li>
+{{/myCampaignList}}
+</ul>
+</script>
