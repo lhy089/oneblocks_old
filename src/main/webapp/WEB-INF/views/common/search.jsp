@@ -14,8 +14,8 @@
         
       </ul>
       <form class="d-flex" role="search" action="/campaign/main" method="post" id="searchForm"> 
-      	<i class="fa-solid fa-angle-left fa-2x search-element" style="cursor:pointer;"></i>
-      	<select id="dateFlag" name="dateFlag" onchange="changeDateSelect()" size="1" class="search-element">
+      	<i onchange="campaignMainList('prev')" class="fa-solid fa-angle-left fa-2x search-element" style="cursor:pointer;"></i>
+      	<select id="dateFlag" name="dateFlag" onchange="campaignMainList('select')" size="1" class="search-element">
       		<option value="none">날짜선택</option>
 			<option value="yesterday" selected>어제</option>
 			<option value="thisWeek">이번주</option>
@@ -31,7 +31,7 @@
       	<label class="search-element">~</label> 
       	<input type="date" id="endDate" name="endDate" class="datepicker form-control search-element" value="${searchParam.endDate}">
 
-		<i class="fa-solid fa-angle-right fa-2x " style="cursor:pointer;" ></i>
+		<i class="fa-solid fa-angle-right fa-2x " onchange="campaignMainList('next')" style="cursor:pointer;" ></i>
       </form>
     </div>
   </div>
@@ -44,8 +44,8 @@
         
       </ul>
       <form class="d-flex a" role="search" action="/campaign/main" method="post" id="searchForm"> 
-      	<i class="fa-solid fa-angle-left fa-2x search-element" style="cursor:pointer;"></i>
-      	<select id="dateFlag" name="dateFlag"  onchange="changeDateSelect()" size="1" class="search-element">
+      	<i class="fa-solid fa-angle-left fa-2x search-element" onclick="campaignMainList('prev')" style="cursor:pointer;"></i>
+      	<select id="dateFlag" name="dateFlag" onchange="campaignMainList('select')" size="1" class="search-element">
       		{{#options}}
 				<option value="{{val}}" {{#sel}}selected{{/sel}}>{{txt}}</option>
 			{{/options}}
@@ -55,7 +55,7 @@
       	<label class="search-element">~</label> 
       	<input type="date" id="endDate" name="endDate" class="datepicker form-control search-element" value="{{endDate}}">
 
-		<i class="fa-solid fa-angle-right fa-2x " style="cursor:pointer;" ></i>
+		<i class="fa-solid fa-angle-right fa-2x" onclick="campaignMainList('next')" style="cursor:pointer;" ></i>
       </form>
   {{/searchParam}}
 </script>
