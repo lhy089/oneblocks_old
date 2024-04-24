@@ -49,4 +49,26 @@ public class MemberController {
 		
 		return forward;
 	}
+	
+//	@PostMapping("/login")
+//	@ResponseBody
+//	@Operation(summary = "로그인", description = "로그인을 한다.")
+//	public Map<String, Object> doLogin(@RequestBody MemberLoginParam memberLoginParam, HttpSession session, Model model) {
+//		String forward = "FAILED";	
+//		Map<String, Object> resultMap = new HashMap<String, Object>();
+//		if(StringUtils.isEmpty(memberLoginParam.getEmail())) {
+//			throw new BaseException(BaseResponseCode.DATA_IS_NULL, new String[] {"email"});
+//		}else if(StringUtils.isEmpty(memberLoginParam.getPassword())) {
+//			throw new BaseException(BaseResponseCode.DATA_IS_NULL, new String[] {"password"});
+//		}
+//		
+//		Member memberInfo = memberService.get(memberLoginParam);
+//		
+//		if(memberInfo != null) {
+//			session.setAttribute("loginMemberInfo", memberInfo);
+//			forward = "SUCCESS";
+//		}
+//		resultMap.put("resultCode", forward);
+//		return resultMap;
+//	}
 }

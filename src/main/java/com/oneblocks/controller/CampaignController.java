@@ -64,4 +64,9 @@ public class CampaignController {
 		 
 		return resultMap;
 	}
+	
+	@GetMapping("/modal/addForm")
+	public void campaignAddForm(Model model) {
+		
+	}
 }

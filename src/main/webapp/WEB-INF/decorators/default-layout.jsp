@@ -28,5 +28,15 @@
 			<sitemesh:write property="body"/>
 		</div>
 	</div>
+	
+<!--  Modal -->
+<div class="modal fade" id="campaignModal" style="--bs-modal-width: 60%;" tabindex="-1" aria-labelledby="campaignModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content" style="background-color: #EEF1F4;">
+			<!-- campaignDialog.jsp -->
+		</div>								
+	</div> 
+</div>
+
 </body>
 </html>
