@@ -1,0 +1,80 @@
+.modal-hidden {
+	display:none;
+ }
+ 
+ .tbodyScroll {
+ 	display: block;
+    max-height: 100px;
+    overflow-y: scroll;
+ }
+ 
+ .trScroll {
+  display: table;
+  width: 100%;
+}
+
+#campaignModalLabel {
+	font-size: 20px; 
+	font-weight: bold;
+}
+
+#mainForm {
+	padding: 20px 10px 10px 10px;
+}
+
+.width15p {
+	width: 15%;
+}
+
+.width73p {
+	width: 73%;
+}
+
+.width12p {
+	width: 12%;
+}
+
+.width10p {
+	width: 10%;
+}
+
+.width20p {
+	width: 20%;
+}
+
+.width70p {
+	width: 70%;
+}
+
+.custom-div {
+	text-align: right; 
+	padding-right: 20px;
+}
+
+.custom-div2 {
+	text-align: right; 
+	padding-right: 25px;
+}
+
+.custom-background-color-Y {
+	background-color:#F6BE2C;
+}
+
+.custom-btn-background-color-G {
+	background-color: #9BA5B7;
+}
+
+.custom-modal-div {
+	margin: 0 20px; 
+	background-color: white;
+}
+
+.custom-modal-table {
+	background-color: white; 
+	width: 100%; 
+	text-align: center;
+}
+
+.productlabel {
+	padding: 15px 15px 5px 10px;
+}
