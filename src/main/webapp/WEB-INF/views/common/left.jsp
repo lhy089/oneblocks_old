@@ -1,4 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
+<script src="../resources/js/common/left.js?t=<%= new java.util.Date() %>"></script>
 <link href="../resources/css/common/left.css?t=<%= new java.util.Date() %>" rel="stylesheet" />
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <!-- 사이드바 -->

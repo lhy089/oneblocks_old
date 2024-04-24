@@ -1,0 +1,22 @@
+.card-body {
+	 margin: 15px;
+}
+
+#campaignAdd {
+	background-color: #F6BE2C;
+}
+
+.custom_borderBasic {
+	border: solid 1px;
+}
+
+.table-main {
+	border: 0.5px solid lightgray;
+	margin: 20px 0;
+}
+
+.custom-icon-on-off {
+	color: #F6BE2C; 
+	font-size: 25px; 
+	cursor: pointer;
+}
