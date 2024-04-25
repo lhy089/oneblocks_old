@@ -4,12 +4,7 @@ $(document).ready(function(){
 
 function campaignMainList(flag) {
 	
-	var searchParam = {
-		flag: flag,
-		dateFlag: $("#dateFlag option:selected").val(),
-		startDate: $("#startDate").val(),
-		endDate: $("#endDate").val()
-	};
+	var searchParam = setSearchParam(flag);
 	
 	$.ajax({
 		url: "/campaign/main",
@@ -20,11 +15,38 @@ function campaignMainList(flag) {
 		dataType : 'json',
 	    success: function(data) 
 		{ 
-			var searchParam = setSearchParam(data.searchParam);
+			var searchParam = setResutlSearchParam(data.searchParam);
 			setTemplateView("searchTemplate", "searchDiv", searchParam);
 			
 			var myCampaignList = setCampaignListParam(data.myCampaignList);
 			setTemplateView("leftTemplate", "campaignNameList", myCampaignList);
+			
+			var salesList = data.salesList;
+			for(var i=0; i<salesList.length; i++) {
+				salesList[i].onOffYn = salesList[i].onOffYn == "Y" ? true : false;
+				
+			}
+			salesList = {salesList : salesList};
+			setTemplateView("campaignTableTemplate", "campaignTableDiv", salesList);
+			
+			var paging = {paging : null};
+			if(data.salesList.length > 0) {
+				paging = data.paging;
+				paging.isPrev = paging.isPrev !=0 ? true : false;
+				paging.isNext = paging.isNext !=0 ? true : false;
+				paging.num = [];
+				for(var i = paging.first; i<=paging.last; i++) {
+					if(paging.pageNum == i) {
+						paging.num.push({value:i, active:true});
+					}else {
+						paging.num.push({value:i});
+					}
+				}
+				paging = {paging : paging};
+			}
+			setTemplateView("paginationTemplate", "paginationDiv", paging);
+			
+			
 			
 	    },
 	    error: function() 
@@ -34,7 +56,21 @@ function campaignMainList(flag) {
 	});
 }
 
-function setSearchParam(searchParam) {
+function setSearchParam(flag) {
+	var searchParam = {
+		flag: flag,
+		dateFlag: $("#dateFlag option:selected").val(),
+		startDate: $("#startDate").val(),
+		endDate: $("#endDate").val(),
+		orderFlag: $('[data-order="A"], [data-order="D"]').data('value'),
+		orderKind: $('.datatable-sorter').data('order') == 'A' ? 'ASC' : 'DESC',
+		pageNum: 1
+	};
+	
+	return searchParam;
+} 
+
+function setResutlSearchParam(searchParam) {
 	var options = [
 		{val:'none', txt:'날짜선택'},
 		{val:'yesterday', txt:'어제'},

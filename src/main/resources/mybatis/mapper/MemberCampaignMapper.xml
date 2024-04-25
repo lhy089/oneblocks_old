@@ -1,16 +1,85 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.oneblocks.repository.CampaignRepository">
+<mapper namespace="com.oneblocks.repository.MemberCampaignRepository">
 
-	<select id="getList" parameterType="com.oneblocks.domain.Member" resultType="com.oneblocks.domain.MemberCampaign">
+	<select id="getList" parameterType="com.oneblocks.parameter.CampaignListSearchParam" resultType="com.oneblocks.vo.NSalesVO">
 		SELECT  
 			MC.CAMPAIGN_ID					as campaignId
 			, MC.MEMBER_CAMPAIGN_NAME 		as memberCampaignName
 			, MC.ON_OFF_YN					as onOffYn
+			,(SELECT CAMPAIGN_PRICE FROM CAMPAIGN_SALES WHERE CAMPAIGN_ID=MC.CAMPAIGN_ID ORDER BY SALES_ID DESC LIMIT 1) 	as campaignPrice
+			, CASE WHEN MC.ON_OFF_YN='Y' THEN DATE_FORMAT(ADDDATE(NOW(), -1),'%Y-%m-%d')
+				ELSE DATE_FORMAT(UPDATE_DT,'%Y-%m-%d') END 					as updateDate
 		FROM MEMBER_CAMPAIGN MC
 		WHERE MC.MEMBER_ID = #{memberId}
-		ORDER BY MC.MEMBER_CAMPAIGN_NAME
+		ORDER BY 
+		<if test="!searchParam.orderFlag.equals('') and searchParam.orderFlag!=null">
+			<choose>
+				<when test="searchParam.orderFlag eq 'c'.toString()">
+					MC.MEMBER_CAMPAIGN_NAME ${searchParam.orderKind}
+				</when>
+				<when test="searchParam.orderFlag eq 'o'.toString()">
+					MC.ON_OFF_YN ${searchParam.orderKind}, MC.MEMBER_CAMPAIGN_NAME
+				</when>
+			</choose>
+		</if>
 	</select>
+	
+	<select id="getMyCampaignOnPeriod" parameterType="Map" resultType="Map">
+   		SELECT A.STARTDATE, A.ENDDATE FROM (
+	   		<![CDATA[
+			SELECT 
+				CASE
+					WHEN ( #{startDate} <= DATE_FORMAT(ON_DATE, '%y%m%d')
+		                		AND ( #{endDate} BETWEEN DATE_FORMAT(ON_DATE, '%y%m%d') AND DATE_FORMAT(IFNULL(OFF_DATE, NOW()), '%y%m%d'))) 
+					THEN DATE_FORMAT(ON_DATE, '%y%m%d')
+		  
+		         	WHEN ( #{startDate} <= DATE_FORMAT(ON_DATE, '%y%m%d') AND #{endDate} >= DATE_FORMAT(IFNULL(OFF_DATE, NOW()), '%y%m%d') ) 
+		         	THEN DATE_FORMAT(ON_DATE, '%y%m%d') 
+		         
+		         	WHEN ( #{startDate} BETWEEN DATE_FORMAT(ON_DATE, '%y%m%d') AND DATE_FORMAT(IFNULL(OFF_DATE, NOW()), '%y%m%d') )
+		              			AND #{endDate} <= DATE_FORMAT(IFNULL(OFF_DATE, NOW()), '%y%m%d') 
+		            THEN #{startDate}
+		         
+		         	WHEN ( #{startDate} BETWEEN DATE_FORMAT(ON_DATE, '%y%m%d') AND DATE_FORMAT(IFNULL(OFF_DATE, NOW()), '%y%m%d') )
+		              			AND #{endDate} >= DATE_FORMAT(IFNULL(OFF_DATE, NOW()), '%y%m%d') 
+		            THEN #{startDate}
+	       		END AS startDate
+	       
+	       		, CASE
+					WHEN ( #{startDate} <= DATE_FORMAT(ON_DATE, '%y%m%d')
+		                		AND ( #{endDate} BETWEEN DATE_FORMAT(ON_DATE, '%y%m%d') AND DATE_FORMAT(IFNULL(OFF_DATE, NOW()), '%y%m%d'))) 
+					THEN #{endDate}
+		  
+		         	WHEN ( #{startDate} <= DATE_FORMAT(ON_DATE, '%y%m%d') AND #{endDate} >= DATE_FORMAT(IFNULL(OFF_DATE, NOW()) , '%y%m%d') ) 
+		         	THEN DATE_FORMAT(IFNULL(OFF_DATE, NOW()), '%y%m%d')
+		         
+		         	WHEN ( #{startDate} BETWEEN DATE_FORMAT(ON_DATE, '%y%m%d') AND DATE_FORMAT(IFNULL(OFF_DATE, NOW()), '%y%m%d') )
+		              			AND #{endDate} <= DATE_FORMAT(IFNULL(OFF_DATE, NOW()), '%y%m%d') 
+		            THEN #{endDate}
+		         
+		         	WHEN ( #{startDate} BETWEEN DATE_FORMAT(ON_DATE, '%y%m%d') AND DATE_FORMAT(IFNULL(OFF_DATE, NOW()), '%y%m%d') )
+		              			AND #{endDate} >= DATE_FORMAT(IFNULL(OFF_DATE, NOW()), '%y%m%d') 
+		            THEN DATE_FORMAT(IFNULL(OFF_DATE, NOW()), '%y%m%d')
+	       		END AS endDate
+	       	FROM MEMBER_CAMPAIGN_HIS
+			WHERE  1=1
+				AND MEMBER_ID = #{memberId}
+	       		AND CAMPAIGN_ID = #{campaignId}
+	       		AND (
+	       				( #{startDate} <= DATE_FORMAT(ON_DATE, '%y%m%d')
+		                		AND ( #{endDate} BETWEEN DATE_FORMAT(ON_DATE, '%y%m%d') AND DATE_FORMAT(IFNULL(OFF_DATE, NOW()), '%y%m%d')))
+	              		OR ( #{startDate} <= DATE_FORMAT(ON_DATE, '%y%m%d') AND #{endDate} >= DATE_FORMAT(IFNULL(OFF_DATE, NOW()) , '%y%m%d') )
+	              		OR (( #{startDate} BETWEEN DATE_FORMAT(ON_DATE, '%y%m%d') AND DATE_FORMAT(IFNULL(OFF_DATE, NOW()), '%y%m%d') )
+		              			AND #{endDate} <= DATE_FORMAT(IFNULL(OFF_DATE, NOW()), '%y%m%d'))
+	              		OR (( #{startDate} BETWEEN DATE_FORMAT(ON_DATE, '%y%m%d') AND DATE_FORMAT(IFNULL(OFF_DATE, NOW()), '%y%m%d') )
+		              			AND #{endDate} >= DATE_FORMAT(IFNULL(OFF_DATE, NOW()), '%y%m%d') )
+					) 
+			]]>
+		) A 
+		GROUP BY A.STARTDATE, A.ENDDATE
+	</select>
+	
 
 </mapper>

@@ -8,4 +8,9 @@ public class SearchParam {
 	private String startDate;
 	private String endDate;
 	private String flag;
+	
+	private String orderFlag;
+	private String orderKind;
+	
+	private int pageNum;
 }

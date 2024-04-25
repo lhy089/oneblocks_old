@@ -20,3 +20,43 @@
 	font-size: 25px; 
 	cursor: pointer;
 }
+
+/* 	pagination */
+.pagination {
+	display: inline-block;
+}
+
+.pagination a {
+	color: black;
+	float: left;
+	padding: 8px 16px;
+	text-decoration: none;
+	border: 1px solid #ddd;
+	margin: 0 4px;
+}
+
+.pagination a.active {
+	background-color: #F6BE2C;
+	color: white;
+	border: 1px solid #F6BE2C;
+}
+
+.pagination a:hover:not (.active ) {
+	background-color: #ddd;
+}
+
+.pagination a:first-child {
+	border-top-left-radius: 5px;
+	border-bottom-left-radius: 5px;
+}
+
+.pagination a:last-child {
+	border-top-right-radius: 5px;
+	border-bottom-right-radius: 5px;
+}
+
+.center {
+	text-align: center;
+	padding: 20px 0;
+}
+/* 	pagination */

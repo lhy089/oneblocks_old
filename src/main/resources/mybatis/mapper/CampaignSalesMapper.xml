@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.oneblocks.repository.CampaignSalesRepository">
+
+	<select id="getMyCampaignSalesInfo" parameterType="Map" resultType="com.oneblocks.vo.NSalesVO"> 
+		SELECT 
+				SUM(SALES_QUANTITY) 	AS totalSalesQuantity
+				, SUM(REVENUE) 			AS totalSalesRevenue 
+		FROM CAMPAIGN_SALES 
+		WHERE 1=1
+			AND CAMPAIGN_ID = #{campaignId}
+        	AND 
+			<foreach collection="dateList" item="date" index="index" separator="or" open="(" close=")">
+            	(SALES_ID BETWEEN #{date.startDate} AND #{date.endDate})
+        	</foreach>
+	</select>
+	
+
+</mapper>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.oneblocks.repository.ProductSalesRepository">
+
+	<select id="getMyProductSalesInfo" parameterType="Map" resultType="com.oneblocks.vo.NSalesVO"> 
+		SELECT 
+				SUM(SALES_QUANTITY) 	AS totalSalesQuantity
+				, SUM(REVENUE) 			AS totalSalesRevenue 
+		FROM PRODUCT_SALES 
+		WHERE 1=1
+			AND PRODUCT_ID IN
+			<foreach collection="productIdList" item="productId" index="index" separator="," open="(" close=")">
+            	#{productId}
+        	</foreach>
+        	AND 
+			<foreach collection="dateList" item="date" index="index" separator="or" open="(" close=")">
+            	(PSALES_ID BETWEEN #{date.startDate} AND #{date.endDate})
+        	</foreach>
+	</select>
+</mapper>
