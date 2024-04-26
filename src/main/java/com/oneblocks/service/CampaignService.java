@@ -7,6 +7,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.oneblocks.domain.Campaign;
 import com.oneblocks.parameter.CampaignListSearchParam;
 import com.oneblocks.parameter.SearchParam;
 import com.oneblocks.repository.CampaignRepository;
@@ -15,6 +16,7 @@ import com.oneblocks.repository.MemberCampaignRepository;
 import com.oneblocks.repository.MemberProductRepository;
 import com.oneblocks.repository.ProductSalesRepository;
 import com.oneblocks.vo.NSalesVO;
+import com.oneblocks.vo.ProductSalesVO;
 
 import io.micrometer.common.util.StringUtils;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -55,7 +57,12 @@ public class CampaignService {
 				continue;
 			}
 			
-			List<Map<String,String>> onDateList = this.getMyCampaignOnPeriod(memberId, salesInfo.getCampaignId(), searchParam);
+			CampaignListSearchParam campaignListSearchParam = new CampaignListSearchParam();
+			campaignListSearchParam.setSearchParam(searchParam);
+			campaignListSearchParam.setMemberId(memberId);
+			campaignListSearchParam.setCampaignId(salesInfo.getCampaignId());
+			
+			List<Map<String,String>> onDateList = this.getMyCampaignOnPeriod(campaignListSearchParam);
 			if(onDateList.size() == 0) {
 				salesInfo.setCampaignPrice("0");
 				salesInfo.setTotalSalesQuantity("0");
@@ -87,13 +94,8 @@ public class CampaignService {
 		return salesList;
 	}
 	
-	public List<Map<String,String>> getMyCampaignOnPeriod(String memberId, String campaignId, SearchParam searchParam) {
-		Map<String,String> data = new HashMap<String,String>();
-		data.put("memberId", memberId);
-		data.put("campaignId", campaignId);
-		data.put("startDate", searchParam.getStartDate());
-		data.put("endDate", searchParam.getEndDate());
-		return memberCampaignRepository.getMyCampaignOnPeriod(data);
+	public List<Map<String,String>> getMyCampaignOnPeriod(CampaignListSearchParam campaignListSearchParam) {
+		return memberCampaignRepository.getMyCampaignOnPeriod(campaignListSearchParam);
 	}
 	
 	public List<String> getMyOnProductIfByCampaignId(String memberId, String campaignId) {
@@ -115,6 +117,18 @@ public class CampaignService {
 		data.put("productIdList", productIdList);
 		data.put("dateList", dateList);
 		return productSalesRepository.getMyProductSalesInfo(data);
+	}
+	
+	public List<ProductSalesVO> getProductSalesList(CampaignListSearchParam campaignListSearchParam) {
+		return productSalesRepository.getProductSalesList(campaignListSearchParam);
+	}
+	
+	public Campaign getCampaignByCampaignId(CampaignListSearchParam campaignListSearchParam) {
+		return campaignRepository.getCampaignByCampaignId(campaignListSearchParam);
+	}
+	
+	public List<ProductSalesVO> getProductSalesByProductId(CampaignListSearchParam campaignListSearchParam) {
+		return productSalesRepository.getProductSalesByProductId(campaignListSearchParam);
 	}
 	
 }

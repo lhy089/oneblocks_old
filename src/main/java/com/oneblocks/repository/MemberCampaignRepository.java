@@ -13,6 +13,6 @@ public interface MemberCampaignRepository {
 	
 	List<NSalesVO> getList(CampaignListSearchParam campaignListSearchParam);
 	
-	List<Map<String,String>> getMyCampaignOnPeriod(Map<String,String> data);
+	List<Map<String,String>> getMyCampaignOnPeriod(CampaignListSearchParam campaignListSearchParam);
 
 }

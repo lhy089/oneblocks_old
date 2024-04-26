@@ -1,9 +1,10 @@
 $(document).ready(function(){
-
+	$("#main").click(function() {
+		location.reload(true);
+	})
 });
 
 function campaignMainList(flag) {
-	
 	var searchParam = setSearchParam(flag);
 	
 	$.ajax({
@@ -14,39 +15,23 @@ function campaignMainList(flag) {
 		contentType : 'application/json',
 		dataType : 'json',
 	    success: function(data) 
-		{ 
+		{ debugger;
+			// 사이드바 세팅
+			if(flag == undefined){
+				var myCampaignList = setCampaignListParam(data.myCampaignList);
+				setTemplateView("leftTemplate", "campaignNameList", myCampaignList);
+			}
+			
+			// search 바 세팅
 			var searchParam = setResutlSearchParam(data.searchParam);
 			setTemplateView("searchTemplate", "searchDiv", searchParam);
-			
-			var myCampaignList = setCampaignListParam(data.myCampaignList);
-			setTemplateView("leftTemplate", "campaignNameList", myCampaignList);
-			
-			var salesList = data.salesList;
-			for(var i=0; i<salesList.length; i++) {
-				salesList[i].onOffYn = salesList[i].onOffYn == "Y" ? true : false;
-				
-			}
-			salesList = {salesList : salesList};
+					
+			// 메인 세이블 세팅
+			var salesList = setCampaignTableParam(data.salesList);		
 			setTemplateView("campaignTableTemplate", "campaignTableDiv", salesList);
 			
-			var paging = {paging : null};
-			if(data.salesList.length > 0) {
-				paging = data.paging;
-				paging.isPrev = paging.isPrev !=0 ? true : false;
-				paging.isNext = paging.isNext !=0 ? true : false;
-				paging.num = [];
-				for(var i = paging.first; i<=paging.last; i++) {
-					if(paging.pageNum == i) {
-						paging.num.push({value:i, active:true});
-					}else {
-						paging.num.push({value:i});
-					}
-				}
-				paging = {paging : paging};
-			}
+			var paging = pasingParam(data.salesList.length, data.paging);
 			setTemplateView("paginationTemplate", "paginationDiv", paging);
-			
-			
 			
 	    },
 	    error: function() 
@@ -57,15 +42,28 @@ function campaignMainList(flag) {
 }
 
 function setSearchParam(flag) {
-	var searchParam = {
-		flag: flag,
-		dateFlag: $("#dateFlag option:selected").val(),
-		startDate: $("#startDate").val(),
-		endDate: $("#endDate").val(),
-		orderFlag: $('[data-order="A"], [data-order="D"]').data('value'),
-		orderKind: $('.datatable-sorter').data('order') == 'A' ? 'ASC' : 'DESC',
-		pageNum: 1
-	};
+	var searchParam = {};
+	if(flag==null) {
+		searchParam = {
+			flag: "select",
+			dateFlag: "yesterday",
+			startDate: null,
+			endDate: null,
+			orderFlag: 'c',
+			orderKind: 'ASC',
+			pageNum: 1
+		};
+	} else {
+		searchParam = {
+			flag: flag,
+			dateFlag: $("#dateFlag option:selected").val(),
+			startDate: $("#startDate").val(),
+			endDate: $("#endDate").val(),
+			orderFlag: $('[data-order="A"], [data-order="D"]').data('value'),
+			orderKind: $('.datatable-sorter').data('order') == 'A' ? 'ASC' : 'DESC',
+			pageNum: 1
+		};
+	}
 	
 	return searchParam;
 } 
@@ -88,6 +86,33 @@ function setResutlSearchParam(searchParam) {
 	searchParam.options = options;
 	searchParam = {searchParam : searchParam};
 	return searchParam;
+}
+
+function setCampaignTableParam(salesList) {
+	for(var i=0; i<salesList.length; i++) {
+		salesList[i].onOffYn = salesList[i].onOffYn == "Y" ? true : false;
+	}
+	salesList = {salesList : salesList};
+	return salesList;
+}
+
+function pasingParam(listSize, paging) {
+	if(listSize > 0) {
+		paging.isPrev = paging.isPrev !=0 ? true : false;
+		paging.isNext = paging.isNext !=0 ? true : false;
+		paging.num = [];
+		for(var i = paging.first; i<=paging.last; i++) {
+			if(paging.pageNum == i) {
+				paging.num.push({value:i, active:true});
+			}else {
+				paging.num.push({value:i});
+			}
+		}
+		paging = {paging : paging};
+	}else {	
+		paging = {paging : null};
+	}
+	return paging;
 }
 
 function setCampaignListParam(campaignListParam) {

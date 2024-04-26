@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.oneblocks.repository.CampaignRepository">
+
+	<select id="getCampaignByCampaignId" parameterType="com.oneblocks.parameter.CampaignListSearchParam" resultType="com.oneblocks.domain.Campaign"> 
+		SELECT 
+			C.CAMPAIGN_ID				AS campaignId
+			, (SELECT MEMBER_CAMPAIGN_NAME FROM MEMBER_CAMPAIGN WHERE CAMPAIGN_ID=C.CAMPAIGN_ID AND MEMBER_ID=#{memberId}) 		AS campaignName
+			, C.CAMPAIGN_URL			AS campaignUrl
+			, C.OPTION_CNT 			AS optionCnt
+			, C.SUPPLEMENT_CNT 		AS supplementCnt
+			, C.REGISTRATION_DATE		AS registrationDate
+ 		FROM CAMPAIGN C
+ 		WHERE C.CAMPAIGN_ID = #{campaignId}
+	</select>
+	
+
+</mapper>

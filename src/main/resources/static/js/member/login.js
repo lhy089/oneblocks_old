@@ -10,9 +10,9 @@ $(document).ready(function(){
       }
    });
    
-//   $("#submit").click(function() {
-//		doLogin() ;
-//   });
+   $("#submit").click(function() {
+		doLogin() ;
+   });
 });
 
 function doLogin() {
@@ -26,9 +26,12 @@ function doLogin() {
 	    async: false,
 	    data : JSON.stringify(memberLoginParam),
 		contentType : 'application/json',
-		dataType : 'json',
+//		dataType : 'json',
 	    success: function(data) 
-		{ debugger;
+		{ 
+			if(data.resultCode == "SUCCESS") {
+				location.href="/campaign/main";
+			}
 			
 	    },
 	    error: function() 

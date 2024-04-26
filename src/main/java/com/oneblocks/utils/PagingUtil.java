@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.oneblocks.domain.Paging;
 import com.oneblocks.vo.NSalesVO;
+import com.oneblocks.vo.ProductSalesVO;
 
 public class PagingUtil {
 	
@@ -52,11 +53,20 @@ public class PagingUtil {
 		return page;
 	}
 	
-	public List<NSalesVO> getListForCurrentPage(List<NSalesVO> newsList) {
+	public List<NSalesVO> getListForCurrentPage(List<NSalesVO> list) {
 		List<NSalesVO> listForPaging = new ArrayList<NSalesVO>();
 		for(int j=page.getStartNum()-1; j<page.getEndNum(); j++) {
-			if(j >= newsList.size()) break;
-			listForPaging.add(newsList.get(j));
+			if(j >= list.size()) break;
+			listForPaging.add(list.get(j));
+		}
+		return listForPaging;
+	}
+	
+	public List<ProductSalesVO> getListForCurrentPage2(List<ProductSalesVO> list) {
+		List<ProductSalesVO> listForPaging = new ArrayList<ProductSalesVO>();
+		for(int j=page.getStartNum()-1; j<page.getEndNum(); j++) {
+			if(j >= list.size()) break;
+			listForPaging.add(list.get(j));
 		}
 		return listForPaging;
 	}

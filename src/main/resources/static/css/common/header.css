@@ -48,9 +48,9 @@
   --bs-font-monospace: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
   --bs-gradient: linear-gradient(180deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0));
   --bs-body-font-family: var(--bs-font-sans-serif);
-  --bs-body-font-size: 1rem;
+  --bs-body-font-size: 0.8em;
   --bs-body-font-weight: 400;
-  --bs-body-line-height: 1.5;
+  --bs-body-line-height: 1.2;
   --bs-body-color: #212529;
   --bs-body-bg: #fff;
   --bs-border-width: 1px;
@@ -92,6 +92,12 @@ body {
   background-color: var(--bs-body-bg);
   -webkit-text-size-adjust: 100%;
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+
+.btn, .datepicker {
+  font-family: var(--bs-body-font-family);
+  font-size: 0.8rem;
+  font-weight: var(--bs-body-font-weight);
 }
 
 .custom-brand {

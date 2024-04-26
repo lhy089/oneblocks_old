@@ -17,7 +17,7 @@
 			</div>
 		</div>
 		
-		<form action="/login" method="post">
+		<form>
 		<div id="loginForm">
 		 	<div class="login-item">
 		 		<p class="login-label">Email</p>
@@ -25,11 +25,11 @@
 		 	</div>
 		 	<div class="login-item">
 		 		<p class="login-label">Password</p>
-		 		<input type="password" name="password" id="password" class="login-input" autocomplete="off"/>
+		 		<input onkeyup="doLogin()" type="password" name="password" id="password" class="login-input" autocomplete="off"/>
 		 	</div>
 		 	
 		 	<div class="login-sub-item">
-		 		<input id="submit" type="submit" class="login pull-right" value="Log In">
+		 		<input id="submit" type="text" class="login pull-right" value="Log In">
 		 	</div>
 		</div>
 		</form>

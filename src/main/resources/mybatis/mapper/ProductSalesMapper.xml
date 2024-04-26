@@ -18,4 +18,47 @@
             	(PSALES_ID BETWEEN #{date.startDate} AND #{date.endDate})
         	</foreach>
 	</select>
+	
+	<select id="getProductSalesList" parameterType="com.oneblocks.parameter.CampaignListSearchParam" resultType="com.oneblocks.vo.ProductSalesVO"> 
+		SELECT 
+			P.PRODUCT_ID								as productId		
+			, P.PRODUCT_NAME							as productName
+			, ( SELECT MP.ON_OFF_YN 	
+				FROM MEMBER_PRODUCT MP 
+				WHERE MEMBER_Id= #{memberId} 
+					AND MP.PRODUCT_ID = P.PRODUCT_ID) 	as onOffYn
+			, PS.SALES_PRICE							as productPrice
+			, SUM(PS.SALES_QUANTITY)					as totalSalesQuantity
+			, SUM(PS.REVENUE)							as totalSalesRevenue
+			, MAX(UPDATE_DATE)							as updateDate
+	FROM PRODUCT P
+	LEFT JOIN PRODUCT_SALES PS ON P.PRODUCT_ID = PS.PRODUCT_ID
+	WHERE P.PRODUCT_ID IN (
+				SELECT PRODUCT_ID FROM PRODUCT WHERE CAMPAIGN_ID=#{campaignId}) 
+			AND 
+			<foreach collection="dateList" item="date" index="index" separator="or" open="(" close=")">
+            	(PS.PSALES_ID BETWEEN #{date.startDate} AND #{date.endDate})
+        	</foreach>
+	GROUP BY productId
+	ORDER BY productName 
+	</select>
+	
+	<select id="getProductSalesByProductId" parameterType="com.oneblocks.parameter.CampaignListSearchParam" resultType="com.oneblocks.vo.ProductSalesVO">
+		SELECT 
+			PS.PRODUCT_ID		 		AS productId
+			, (SELECT PRODUCT_NAME FROM PRODUCT WHERE PRODUCT_ID=#{productId}) AS productName
+			, PS.SALES_PRICE			AS productPrice
+			, PS.SALES_QUANTITY	 		AS totalSalesQuantity
+			, PS.REVENUE				AS totalSalesRevenue
+			, PS.UPDATE_DATE 			AS updateDate
+	 	FROM PRODUCT_SALES PS 
+		WHERE 1=1
+	 		AND PS.PRODUCT_ID = #{productId}
+	 		AND
+	 		<foreach collection="dateList" item="date" index="index" separator="or" open="(" close=")">
+            	(PS.PSALES_ID BETWEEN #{date.startDate} AND #{date.endDate})
+        	</foreach>
+	 	ORDER BY UPDATEDATE DESC
+	</select>
+	
 </mapper>

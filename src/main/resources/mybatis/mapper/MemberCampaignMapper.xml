@@ -13,68 +13,68 @@
 				ELSE DATE_FORMAT(UPDATE_DT,'%Y-%m-%d') END 					as updateDate
 		FROM MEMBER_CAMPAIGN MC
 		WHERE MC.MEMBER_ID = #{memberId}
-		ORDER BY 
-		<if test="!searchParam.orderFlag.equals('') and searchParam.orderFlag!=null">
-			<choose>
-				<when test="searchParam.orderFlag eq 'c'.toString()">
-					MC.MEMBER_CAMPAIGN_NAME ${searchParam.orderKind}
-				</when>
-				<when test="searchParam.orderFlag eq 'o'.toString()">
-					MC.ON_OFF_YN ${searchParam.orderKind}, MC.MEMBER_CAMPAIGN_NAME
-				</when>
-			</choose>
-		</if>
+		ORDER BY MC.MEMBER_CAMPAIGN_NAME
+<!-- 		<if test="!searchParam.orderFlag.equals('') and searchParam.orderFlag!=null"> -->
+<!-- 			<choose> -->
+<!-- 				<when test="searchParam.orderFlag eq 'c'.toString()"> -->
+<!-- 					MC.MEMBER_CAMPAIGN_NAME ${searchParam.orderKind} -->
+<!-- 				</when> -->
+<!-- 				<when test="searchParam.orderFlag eq 'o'.toString()"> -->
+<!-- 					MC.ON_OFF_YN ${searchParam.orderKind}, MC.MEMBER_CAMPAIGN_NAME -->
+<!-- 				</when> -->
+<!-- 			</choose> -->
+<!-- 		</if> -->
 	</select>
 	
-	<select id="getMyCampaignOnPeriod" parameterType="Map" resultType="Map">
-   		SELECT A.STARTDATE, A.ENDDATE FROM (
+	<select id="getMyCampaignOnPeriod" parameterType="com.oneblocks.parameter.CampaignListSearchParam" resultType="Map">
+   		SELECT DATE_FORMAT(A.STARTDATE, '%y%m%d') AS startDate, DATE_FORMAT(A.ENDDATE, '%y%m%d') AS endDate FROM (
 	   		<![CDATA[
 			SELECT 
 				CASE
-					WHEN ( #{startDate} <= DATE_FORMAT(ON_DATE, '%y%m%d')
-		                		AND ( #{endDate} BETWEEN DATE_FORMAT(ON_DATE, '%y%m%d') AND DATE_FORMAT(IFNULL(OFF_DATE, NOW()), '%y%m%d'))) 
-					THEN DATE_FORMAT(ON_DATE, '%y%m%d')
+					WHEN ( #{searchParam.startDate} <= DATE_FORMAT(ON_DATE, '%Y-%m-%d')
+		                		AND ( #{searchParam.endDate} BETWEEN DATE_FORMAT(ON_DATE, '%Y-%m-%d') AND DATE_FORMAT(IFNULL(OFF_DATE, NOW()), '%Y-%m-%d'))) 
+					THEN DATE_FORMAT(ON_DATE, '%Y-%m-%d')
 		  
-		         	WHEN ( #{startDate} <= DATE_FORMAT(ON_DATE, '%y%m%d') AND #{endDate} >= DATE_FORMAT(IFNULL(OFF_DATE, NOW()), '%y%m%d') ) 
-		         	THEN DATE_FORMAT(ON_DATE, '%y%m%d') 
+		         	WHEN ( #{searchParam.startDate} <= DATE_FORMAT(ON_DATE, '%Y-%m-%d') AND #{searchParam.endDate} >= DATE_FORMAT(IFNULL(OFF_DATE, NOW()), '%Y-%m-%d') ) 
+		         	THEN DATE_FORMAT(ON_DATE, '%Y-%m-%d') 
 		         
-		         	WHEN ( #{startDate} BETWEEN DATE_FORMAT(ON_DATE, '%y%m%d') AND DATE_FORMAT(IFNULL(OFF_DATE, NOW()), '%y%m%d') )
-		              			AND #{endDate} <= DATE_FORMAT(IFNULL(OFF_DATE, NOW()), '%y%m%d') 
-		            THEN #{startDate}
+		         	WHEN ( #{searchParam.startDate} BETWEEN DATE_FORMAT(ON_DATE, '%Y-%m-%d') AND DATE_FORMAT(IFNULL(OFF_DATE, NOW()), '%Y-%m-%d') )
+		              			AND #{searchParam.endDate} <= DATE_FORMAT(IFNULL(OFF_DATE, NOW()), '%Y-%m-%d') 
+		            THEN #{searchParam.startDate}
 		         
-		         	WHEN ( #{startDate} BETWEEN DATE_FORMAT(ON_DATE, '%y%m%d') AND DATE_FORMAT(IFNULL(OFF_DATE, NOW()), '%y%m%d') )
-		              			AND #{endDate} >= DATE_FORMAT(IFNULL(OFF_DATE, NOW()), '%y%m%d') 
-		            THEN #{startDate}
+		         	WHEN ( #{searchParam.startDate} BETWEEN DATE_FORMAT(ON_DATE, '%Y-%m-%d') AND DATE_FORMAT(IFNULL(OFF_DATE, NOW()), '%Y-%m-%d') )
+		              			AND #{searchParam.endDate} >= DATE_FORMAT(IFNULL(OFF_DATE, NOW()), '%Y-%m-%d') 
+		            THEN #{searchParam.startDate}
 	       		END AS startDate
 	       
 	       		, CASE
-					WHEN ( #{startDate} <= DATE_FORMAT(ON_DATE, '%y%m%d')
-		                		AND ( #{endDate} BETWEEN DATE_FORMAT(ON_DATE, '%y%m%d') AND DATE_FORMAT(IFNULL(OFF_DATE, NOW()), '%y%m%d'))) 
-					THEN #{endDate}
+					WHEN ( #{searchParam.startDate} <= DATE_FORMAT(ON_DATE, '%Y-%m-%d')
+		                		AND ( #{searchParam.endDate} BETWEEN DATE_FORMAT(ON_DATE, '%Y-%m-%d') AND DATE_FORMAT(IFNULL(OFF_DATE, NOW()), '%Y-%m-%d'))) 
+					THEN #{searchParam.endDate}
 		  
-		         	WHEN ( #{startDate} <= DATE_FORMAT(ON_DATE, '%y%m%d') AND #{endDate} >= DATE_FORMAT(IFNULL(OFF_DATE, NOW()) , '%y%m%d') ) 
-		         	THEN DATE_FORMAT(IFNULL(OFF_DATE, NOW()), '%y%m%d')
+		         	WHEN ( #{searchParam.startDate} <= DATE_FORMAT(ON_DATE, '%Y-%m-%d') AND #{searchParam.endDate} >= DATE_FORMAT(IFNULL(OFF_DATE, NOW()) , '%Y-%m-%d') ) 
+		         	THEN DATE_FORMAT(IFNULL(OFF_DATE, NOW()), '%Y-%m-%d')
 		         
-		         	WHEN ( #{startDate} BETWEEN DATE_FORMAT(ON_DATE, '%y%m%d') AND DATE_FORMAT(IFNULL(OFF_DATE, NOW()), '%y%m%d') )
-		              			AND #{endDate} <= DATE_FORMAT(IFNULL(OFF_DATE, NOW()), '%y%m%d') 
-		            THEN #{endDate}
+		         	WHEN ( #{searchParam.startDate} BETWEEN DATE_FORMAT(ON_DATE, '%Y-%m-%d') AND DATE_FORMAT(IFNULL(OFF_DATE, NOW()), '%Y-%m-%d') )
+		              			AND #{searchParam.endDate} <= DATE_FORMAT(IFNULL(OFF_DATE, NOW()), '%Y-%m-%d') 
+		            THEN #{searchParam.endDate}
 		         
-		         	WHEN ( #{startDate} BETWEEN DATE_FORMAT(ON_DATE, '%y%m%d') AND DATE_FORMAT(IFNULL(OFF_DATE, NOW()), '%y%m%d') )
-		              			AND #{endDate} >= DATE_FORMAT(IFNULL(OFF_DATE, NOW()), '%y%m%d') 
-		            THEN DATE_FORMAT(IFNULL(OFF_DATE, NOW()), '%y%m%d')
+		         	WHEN ( #{searchParam.startDate} BETWEEN DATE_FORMAT(ON_DATE, '%Y-%m-%d') AND DATE_FORMAT(IFNULL(OFF_DATE, NOW()), '%Y-%m-%d') )
+		              			AND #{searchParam.endDate} >= DATE_FORMAT(IFNULL(OFF_DATE, NOW()), '%Y-%m-%d') 
+		            THEN DATE_FORMAT(IFNULL(OFF_DATE, NOW()), '%Y-%m-%d')
 	       		END AS endDate
 	       	FROM MEMBER_CAMPAIGN_HIS
 			WHERE  1=1
 				AND MEMBER_ID = #{memberId}
 	       		AND CAMPAIGN_ID = #{campaignId}
 	       		AND (
-	       				( #{startDate} <= DATE_FORMAT(ON_DATE, '%y%m%d')
-		                		AND ( #{endDate} BETWEEN DATE_FORMAT(ON_DATE, '%y%m%d') AND DATE_FORMAT(IFNULL(OFF_DATE, NOW()), '%y%m%d')))
-	              		OR ( #{startDate} <= DATE_FORMAT(ON_DATE, '%y%m%d') AND #{endDate} >= DATE_FORMAT(IFNULL(OFF_DATE, NOW()) , '%y%m%d') )
-	              		OR (( #{startDate} BETWEEN DATE_FORMAT(ON_DATE, '%y%m%d') AND DATE_FORMAT(IFNULL(OFF_DATE, NOW()), '%y%m%d') )
-		              			AND #{endDate} <= DATE_FORMAT(IFNULL(OFF_DATE, NOW()), '%y%m%d'))
-	              		OR (( #{startDate} BETWEEN DATE_FORMAT(ON_DATE, '%y%m%d') AND DATE_FORMAT(IFNULL(OFF_DATE, NOW()), '%y%m%d') )
-		              			AND #{endDate} >= DATE_FORMAT(IFNULL(OFF_DATE, NOW()), '%y%m%d') )
+	       				( #{searchParam.startDate} <= DATE_FORMAT(ON_DATE, '%Y-%m-%d')
+		                		AND ( #{searchParam.endDate} BETWEEN DATE_FORMAT(ON_DATE, '%Y-%m-%d') AND DATE_FORMAT(IFNULL(OFF_DATE, NOW()), '%Y-%m-%d')))
+	              		OR ( #{searchParam.startDate} <= DATE_FORMAT(ON_DATE, '%Y-%m-%d') AND #{searchParam.endDate} >= DATE_FORMAT(IFNULL(OFF_DATE, NOW()) , '%Y-%m-%d') )
+	              		OR (( #{searchParam.startDate} BETWEEN DATE_FORMAT(ON_DATE, '%Y-%m-%d') AND DATE_FORMAT(IFNULL(OFF_DATE, NOW()), '%Y-%m-%d') )
+		              			AND #{searchParam.endDate} <= DATE_FORMAT(IFNULL(OFF_DATE, NOW()), '%Y-%m-%d'))
+	              		OR (( #{searchParam.startDate} BETWEEN DATE_FORMAT(ON_DATE, '%Y-%m-%d') AND DATE_FORMAT(IFNULL(OFF_DATE, NOW()), '%Y-%m-%d') )
+		              			AND #{searchParam.endDate} >= DATE_FORMAT(IFNULL(OFF_DATE, NOW()), '%Y-%m-%d') )
 					) 
 			]]>
 		) A 

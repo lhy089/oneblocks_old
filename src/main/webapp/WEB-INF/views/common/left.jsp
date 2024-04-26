@@ -13,11 +13,7 @@
 				<a href="#" class="custom-float-right" id="btnHideCampaignName">△</a>
 			</div>
 			<div id="campaignNameList">
-				<ul>
-					<c:forEach var="campaign" items="${myCampaignList}" varStatus="status">
-						<li><a  <c:if test='${campaign.onOffYn ne "Y"}'> style="color:lightgray;" </c:if> href="/campaign/productList?campaignId=${campaign.campaignId}&pageNum=1" data-campaign-id='${campaign.campaignId}'> ${campaign.memberCampaignName}</a></li>
-					</c:forEach>
-				</ul>
+				
 			</div>
 		</div>
 	</div>
@@ -28,7 +24,7 @@
 <script id="leftTemplate" type="x-tmpl-mustache">
 <ul>
 {{#myCampaignList}}
-	<li><a  {{^onOffYn}} style="color:lightgray;" {{/onOffYn}} href="/campaign/productList?campaignId={{campaignId}}&pageNum=1" data-campaign-id='{{campaignId}}'> {{memberCampaignName}}</a></li>
+	<li><a  {{^onOffYn}} style="color:lightgray;" {{/onOffYn}} href="#" onclick="productList('{{campaignId}}')"> {{memberCampaignName}}</a></li>
 {{/myCampaignList}}
 </ul>
 </script>

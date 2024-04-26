@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,14 +14,19 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.oneblocks.configuration.RequestConfiguration;
+import com.oneblocks.domain.Campaign;
 import com.oneblocks.domain.Member;
 import com.oneblocks.domain.Paging;
+import com.oneblocks.domain.Product;
 import com.oneblocks.parameter.CampaignListSearchParam;
 import com.oneblocks.parameter.SearchParam;
 import com.oneblocks.service.CampaignService;
+import com.oneblocks.utils.CampaignUtil;
 import com.oneblocks.utils.PagingUtil;
 import com.oneblocks.utils.SearchUtil;
 import com.oneblocks.vo.NSalesVO;
+import com.oneblocks.vo.ProductSalesVO;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -35,23 +41,15 @@ public class CampaignController {
 	private CampaignService campaignService;
 	
 	@GetMapping("/main")
-//	@RequestConfiguration
-	@Operation(summary = "메인 화면", description = "캠페인 판매량 화면을 조회한다")
+	@RequestConfiguration
+	@Operation(summary = "메인 화면 이동", description = "캠페인 판매량 화면을 호출한다")
 	public void mainHome(HttpSession session, Model model) {
-		SearchParam searchParam = new SearchParam();
-		searchParam.setDateFlag("yesterday");
-		searchParam.setFlag("select");
-		searchParam = SearchUtil.setSalesDate(searchParam);
 		
-		Member member = (Member) session.getAttribute("loginMemberInfo");
-//		List<MemberCampaign> myCampaignList = campaignService.getList(member);
-//		model.addAttribute("myCampaignList", myCampaignList);
-		model.addAttribute("searchParam", searchParam);
 	}
 	
 	@PostMapping("/main")
 	@ResponseBody
-//	@RequestConfiguration
+	@RequestConfiguration
 	@Operation(summary = "메인 화면", description = "캠페인 판매량 화면을 조회한다")
 	public Map<String, Object> main(@RequestBody SearchParam searchParam, HttpSession session) {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
@@ -106,6 +104,78 @@ public class CampaignController {
 //		resultMap.put("optionList", optionList);
 //		resultMap.put("supplementList", supplementList);
 
+		return resultMap;
+	}
+	
+	@PostMapping("/product")
+	@ResponseBody
+//	@RequestConfiguration
+	@Operation(summary = "프로덕트 화면", description = "옵션 판매량 화면을 조회한다")
+	public Map<String, Object> product(@RequestBody CampaignListSearchParam campaignListSearchParam, HttpSession session) {
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		 
+		/* startDate, endDate 날짜조건 계산 */
+		SearchParam searchParam = SearchUtil.setSalesDate(campaignListSearchParam.getSearchParam());
+		
+		/*
+		 * 사이드 바 캠페인리스트, 메인 리스트 조회 
+		 * 내가 등록한 모든 캠페인
+		 */
+		Member member = (Member) session.getAttribute("loginMemberInfo");
+		campaignListSearchParam.setSearchParam(searchParam);
+		campaignListSearchParam.setMemberId(member.getMemberId());
+		
+		List<Map<String,String>> onDateList = campaignService.getMyCampaignOnPeriod(campaignListSearchParam);
+		campaignListSearchParam.setDateList(onDateList);
+		
+		List<ProductSalesVO> salesList = campaignService.getProductSalesList(campaignListSearchParam);
+		Campaign campaign = campaignService.getCampaignByCampaignId(campaignListSearchParam);
+		
+		PagingUtil paging = new PagingUtil();
+        // 한 화면에 보여질 데이터 수, 한 화면에 보여지는 페이지 수, 현재 페이지, 전체 데이터 갯수
+        Paging page = paging.initPaginationInfo(10, 10, searchParam.getPageNum(), salesList.size());
+        List<ProductSalesVO> newsListForPaging = paging.getListForCurrentPage2(salesList);
+		
+        resultMap.put("campaign", campaign);
+		resultMap.put("salesList", newsListForPaging);
+		resultMap.put("searchParam", searchParam);
+		resultMap.put("paging", page);
+		 
+		return resultMap;
+	}
+	
+	@PostMapping("/productDetail")
+	@ResponseBody
+//	@RequestConfiguration
+	@Operation(summary = "프로덕트 화면", description = "옵션 판매량 화면을 조회한다")
+	public Map<String, Object> productDetail(@RequestBody CampaignListSearchParam campaignListSearchParam, HttpSession session) {
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		 
+		/* startDate, endDate 날짜조건 계산 */
+		SearchParam searchParam = SearchUtil.setSalesDate(campaignListSearchParam.getSearchParam());
+		
+		/*
+		 * 사이드 바 캠페인리스트, 메인 리스트 조회 
+		 * 내가 등록한 모든 캠페인
+		 */
+		Member member = (Member) session.getAttribute("loginMemberInfo");
+		campaignListSearchParam.setSearchParam(searchParam);
+		campaignListSearchParam.setMemberId(member.getMemberId());
+		
+		List<Map<String,String>> onDateList = campaignService.getMyCampaignOnPeriod(campaignListSearchParam);
+		campaignListSearchParam.setDateList(onDateList);
+		
+		List<ProductSalesVO> salesList = campaignService.getProductSalesByProductId(campaignListSearchParam);
+		
+		PagingUtil paging = new PagingUtil();
+        // 한 화면에 보여질 데이터 수, 한 화면에 보여지는 페이지 수, 현재 페이지, 전체 데이터 갯수
+        Paging page = paging.initPaginationInfo(10, 10, searchParam.getPageNum(), salesList.size());
+        List<ProductSalesVO> newsListForPaging = paging.getListForCurrentPage2(salesList);
+		
+		resultMap.put("salesList", newsListForPaging);
+		resultMap.put("searchParam", searchParam);
+		resultMap.put("paging", page);
+		 
 		return resultMap;
 	}
 }
