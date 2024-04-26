@@ -41,7 +41,7 @@
 
 				<div class="datatable-container modal-hidden custom-modal-div">
 					<label class="productlabel">옵션구성</label>
-					<table id="datatablesSimple" class="datatable-table custom-modal-table">
+					<table id="datatablesSimple" class="table table-hover custom-modal-table">
 						<thead class="custom-btn-background-color-G">
 							<tr class="trScroll">
 								<th class="width10p"><input type="checkbox" id="optionChk" value="" name="productChk"></th>
@@ -58,7 +58,7 @@
 
 				<div class="datatable-container modal-hidden custom-modal-div">
 					<label class="productlabel">추가구성상품</label>
-					<table id="datatablesSimple" class="datatable-table custom-modal-table">
+					<table id="datatablesSimple" class="table table-hover custom-modal-table">
 						<thead class="custom-btn-background-color-G">
 							<tr class="trScroll">
 								<th class="width10p"><input type="checkbox" id="supplementChk" name="productChk" value=""></th>
@@ -93,7 +93,7 @@
 </script>
 
 <script id="supplementBodyTemplate" type="x-tmpl-mustache">
-{{#supplementList}}
+{{#supplementListData}}
 <tr data-index='0' class='trScroll'>
 	<td class="width10p">
 		<input type='checkbox' name='supplementId' value='{{productId}}'/>
@@ -101,7 +101,7 @@
 	<td class="width70p">{{productName}}</td>
 	<td class="width20p">{{productPrice}}</td>
 </tr>
-{{/supplementList}}
+{{/supplementListData}}
 </script>
 
 </body>

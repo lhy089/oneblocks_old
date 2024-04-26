@@ -95,14 +95,14 @@ public class CampaignController {
 
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 
-//		JSONObject campaignData = campaignService.getCampaignDataByCampaignUrl(campaignUrl);
-//		Campaign campaignInfo = campaignService.getCampaignInfo(campaignData);
-//		List<Product> optionList = campaignService.getOptionList(campaignData);
-//		List<Product> supplementList = campaignService.getSupplementList(campaignData);
+		JSONObject campaignData = CampaignUtil.getCampaignDataByCampaignUrl(campaignUrl);
+		Campaign campaignInfo = CampaignUtil.getCampaignInfo(campaignData);
+		List<Product> optionList = CampaignUtil.getOptionList(campaignData);
+		List<Product> supplementList = CampaignUtil.getSupplementList(campaignData);
 
-//		resultMap.put("productInfo", campaignInfo); 
-//		resultMap.put("optionList", optionList);
-//		resultMap.put("supplementList", supplementList);
+		resultMap.put("productInfo", campaignInfo); 
+		resultMap.put("optionList", optionList);
+		resultMap.put("supplementList", supplementList);
 
 		return resultMap;
 	}

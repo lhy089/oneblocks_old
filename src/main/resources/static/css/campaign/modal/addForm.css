@@ -5,10 +5,10 @@
  .tbodyScroll {
  	display: block;
     max-height: 100px;
-    overflow-y: scroll;
+    overflow-y: auto;
  }
  
- .trScroll {
+.trScroll {
   display: table;
   width: 100%;
 }
@@ -61,7 +61,7 @@
 }
 
 .custom-btn-background-color-G {
-	background-color: #9BA5B7;
+	--bs-table-bg: #9BA5B7;
 }
 
 .custom-modal-div {
