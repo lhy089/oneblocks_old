@@ -6,6 +6,14 @@ $(document).ready(function(){
 	$("#saveCampaign").click(function () {
 		saveCampaign();
 	});
+	
+	$("#optionChk").click(function () {
+		allOptionCheck();
+	});
+	
+	$("#supplementChk").click(function () {
+		allSupplementCheck();
+	});
 });
 
 var campaignObj = {};
@@ -136,4 +144,20 @@ function handleOnInput(el, maxlength) {
     el.value = el.value.substr(0, maxlength);
     alert("캠페인명은 30자까지 입력할 수 있습니다.");
   }
+}
+
+function allOptionCheck() {
+	if($("#optionChk").is(':checked')) {
+		$("input[name='optionId']").prop('checked',true);
+	}else {
+		$("input[name='optionId']").prop('checked',false);
+	}
+}
+
+function allSupplementCheck() {
+	if($("#supplementChk").is(':checked')) {
+		$("input[name='supplementId']").prop('checked',true);
+	}else {
+		$("input[name='supplementId']").prop('checked',false);
+	}
 }
