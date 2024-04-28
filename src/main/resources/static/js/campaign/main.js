@@ -1,13 +1,90 @@
 $(document).ready(function(){
 	$("#campaignAdd").click(function() {
-		$('#campaignModal').modal('hide')
-		$("#campaignModal .modal-content").load("/campaign/modal/addForm");
-		$("#campaignModal").modal("show");
+		callCampaignAddModal();
+	});
+	
+	$("#btnDeleteCampaign").click(function() {
+		deleteCampaign();
 	});
 	
 	campaignMainListInit();
 });
 
+function campaignCheck() {
+	if($("#campaignChk").is(':checked')) {
+		$("input[name='campaignId']").prop('checked',true);
+	}else {
+		$("input[name='campaignId']").prop('checked',false);
+	}	
+}
+
+function productCheck() {
+	if($("#productChk").is(':checked')) {
+		$("input[name='productId']").prop('checked',true);
+	}else {
+		$("input[name='productId']").prop('checked',false);
+	}	
+}
+
+function callCampaignAddModal() {
+	$('#campaignModal').modal('hide')
+	$("#campaignModal .modal-content").load("/campaign/modal/addForm");
+	$("#campaignModal").modal("show");
+}
+
+function deleteCampaign() {
+	if($("input[name='campaignId']:checked").length == 0 ){
+		alert("캠페인을 선택해주세요.");
+		return false;
+	}
+	
+	if(confirm("캠페인 상품 추적을 멈추시겠습니까?")) {
+		var campaignIdList = [];
+		$.each($("input[name='campaignId']:checked"), function(index, campaign) {
+			campaignIdList.push(campaign.value);
+		});
+		
+		deleteCampaign(campaignIdList);
+	}
+}
+
+function deleteCampaign(campaignIdList) {
+	$.ajax({
+			url: "/campaign/delete",
+			type: "POST",
+			async: false,
+			data: JSON.stringify(campaignIdList),
+		    contentType : 'application/json; charset=UTF-8',
+			dataType : 'json',
+			success: function(data)
+			{ 
+				alert("처리 되었습니다.");
+				location.reload(true);
+			},
+			error: function() 
+			{
+				console.log("AJAX Request 실패");
+			}
+		});
+}
+
+function toggleCampaign(campaignId, flag) {
+	if (flag == "off") {
+		if(confirm("캠페인 상품 추적을 멈추시겠습니까?")) {
+			var campaignIdList = [];
+			campaignIdList.push(campaignId);
+			deleteCampaign(campaignIdList);
+		}
+	}else {
+		modifyCampaign(campaignId);
+	}
+}
+
+function modifyCampaign(campaignId) {
+	callCampaignAddModal();
+}
+	
+	
 // 최초진입, 새로고침
 function campaignMainListInit() {
 	var param = {

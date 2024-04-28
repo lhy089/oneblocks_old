@@ -205,4 +205,19 @@ public class CampaignController {
 		resultMap.put("resultCd", "SUCCESS");
 		return resultMap;
 	}
+	 
+	 @PostMapping("/delete")
+	 @ResponseBody
+	 public Map<String, Object> updateOffMyCampaign(@RequestBody List<String> campaignIdList, HttpSession session) {
+		Member member = (Member) session.getAttribute("loginMemberInfo");
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		campaignService.setOffMemberCampaign(member.getMemberId(), campaignIdList);
+		resultMap.put("resultCd", "SUCCESS");
+		return resultMap;
+	 }
+
+	 @GetMapping("/modal/modifyForm")
+	 public void campaignModifyForm(Model model) {
+
+	 }
 }

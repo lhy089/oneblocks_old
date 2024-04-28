@@ -16,4 +16,6 @@ public interface MemberCampaignHisRepository {
 	String getMaxHistoryId(String campaignId);
 	
 	List<Map<String,String>> getMyCampaignOnPeriod(CampaignListSearchParam campaignListSearchParam);
+	
+	int setOffMemberCampaignHis(Map<String,Object> data);
 }

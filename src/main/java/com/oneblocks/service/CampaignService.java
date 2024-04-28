@@ -267,4 +267,12 @@ public class CampaignService {
 		return productRepository.getProductByProductId(campaignListSearchParam);
 	}
 	
+	public void setOffMemberCampaign(String memberId, List<String> campaignIdList) {
+		Map<String,Object> data = new HashMap<String,Object>();
+		data.put("memberId", memberId);
+		data.put("campaignIdList", campaignIdList);
+		memberCampaignRepository.setOffMemberCampaign(data);
+		memberCampaignHisRepository.setOffMemberCampaignHis(data);
+	}
+	
 }

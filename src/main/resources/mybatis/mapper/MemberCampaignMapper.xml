@@ -71,5 +71,17 @@
 		VALUES
     	(#{memberCampaignName},#{memberId}, #{campaignId}, #{onOffYn}, NOW(), NOW()) 	
 	</insert>
+	
+	<update id="setOffMemberCampaign" parameterType="Map"> 
+		UPDATE	MEMBER_CAMPAIGN 
+		SET 	ON_OFF_YN ="N"
+				, UPDATE_DT = NOW()
+		WHERE 1=1
+			AND MEMBER_ID=#{memberId}
+			AND CAMPAIGN_iD IN
+			<foreach collection="campaignIdList" item="campaignId" index="index" separator="," open="(" close=")">
+            	#{campaignId}
+        	</foreach>
+	</update>
 
 </mapper>

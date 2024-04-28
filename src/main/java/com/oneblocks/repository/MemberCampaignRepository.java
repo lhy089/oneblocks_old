@@ -1,6 +1,7 @@
 package com.oneblocks.repository;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Repository;
 
@@ -18,5 +19,7 @@ public interface MemberCampaignRepository {
 	String checkDuplicationCampaign(MemberCampaign memberCampaign);
 	
 	void insertMemberCampaignInfo(MemberCampaign memberCampaign);
+	
+	int setOffMemberCampaign(Map<String,Object> data);
 
 }
