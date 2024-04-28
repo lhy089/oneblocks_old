@@ -141,7 +141,7 @@
 <script id="productDetailTableHeadTemplate" type="x-tmpl-mustache">
 <tr>
 {{#productDetailHead}}
-	<th scope="col"><a href="javascript:void(0);" onclick="productDetailInit('','date','1',''); return false;" class="datatable-sorter">{{headName}} {{#orderIcon}}<i class="fa-solid {{orderClass}}"></i>{{/orderIcon}}</a></th>
+	<th scope="col"><a href="javascript:void(0);" onclick="productDetailInit('','date','1','{{orderFlag}}'); return false;" class="datatable-sorter">{{headName}} {{#orderIcon}}<i class="fa-solid {{orderClass}}"></i>{{/orderIcon}}</a></th>
 {{/productDetailHead}}
 </tr>
 </script>

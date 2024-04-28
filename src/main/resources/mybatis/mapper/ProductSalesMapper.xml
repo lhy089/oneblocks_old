@@ -102,22 +102,22 @@
 		<if test="!searchParam.orderFlag.equals('') and searchParam.orderFlag!=null">
 			<choose>
 				<when test="searchParam.orderFlag eq 'c'.toString()">
-					productName ${searchParam.orderKind}
+					updateDate ${searchParam.orderKind}
 				</when>
 				<when test="searchParam.orderFlag eq 'p'.toString()">
-					cast(productPrice as unsigned) ${searchParam.orderKind}, productName
+					cast(productPrice as unsigned) ${searchParam.orderKind}
 				</when>
 				<when test="searchParam.orderFlag eq 'q'.toString()">
-					totalSalesQuantity ${searchParam.orderKind}, productName
+					totalSalesQuantity ${searchParam.orderKind}
 				</when>
 				<when test="searchParam.orderFlag eq 'r'.toString()">
-					totalSalesRevenue ${searchParam.orderKind}, productName
+					cast(totalSalesRevenue as unsigned) ${searchParam.orderKind}
 				</when>
 				<when test="searchParam.orderFlag eq 'u'.toString()">
-					updateDate ${searchParam.orderKind}, productName
+					updateDate ${searchParam.orderKind}
 				</when>
 				<otherwise>
-					productName ASC
+					updateDate ASC
 				</otherwise>
 			</choose>
 		</if>

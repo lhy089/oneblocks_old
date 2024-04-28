@@ -24,7 +24,7 @@
 <script id="leftTemplate" type="x-tmpl-mustache">
 <ul>
 {{#myCampaignList}}
-	<li><a  {{^onOffYn}} style="color:lightgray;" {{/onOffYn}} href="#" onclick="productList('{{campaignId}}')"> {{memberCampaignName}}</a></li>
+	<li><a  {{^onOffYn}} style="color:lightgray;" {{/onOffYn}} href="javascript:void(0);" onclick="productListInit('{{campaignId}}','date','1',''); return false;"> {{memberCampaignName}}</a></li>
 {{/myCampaignList}}
 </ul>
 </script>
