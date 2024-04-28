@@ -28,6 +28,12 @@
 			<sitemesh:write property="body"/>
 		</div>
 	</div>
+
+<!-- ajax loading img -->
+<div class="wrap-loading display-none">
+    <div><img src="https://t1.daumcdn.net/cfile/tistory/233F6D505786DA870A" /></div>
+</div>
+<!-- ajax loading img -->
 	
 <!--  Modal -->
 <div class="modal fade" id="campaignModal" style="--bs-modal-width: 60%;" tabindex="-1" aria-labelledby="campaignModalLabel" aria-hidden="true">

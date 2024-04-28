@@ -21,14 +21,12 @@ var optionList = [];
 var supplementList = [];
 
 function getCampaignInfo() {
-	
 	var campaignUrl = setCampaignUrl();
-	
 	$.ajax({
 		url: "/campaign/get",
 		type: "GET",
 		data: {"campaignUrl" : campaignUrl},
-		async: false,
+		async: true,
 		success: function(data) 
 		{ 
 			$("input[name='productChk']").prop('checked',false);
@@ -42,6 +40,12 @@ function getCampaignInfo() {
 		
 			setModalView();
 		},
+		beforeSend:function(){
+        	$('.wrap-loading').removeClass('display-none');
+   	 	},
+    	complete:function(){
+        	$('.wrap-loading').addClass('display-none');
+    	},
 		error: function() 
 		{
 			alert("조회에 실패 헀습니다. 브라우저에서 url이 정상 동작할 시 관리자에게 문의하세요.");
