@@ -319,4 +319,11 @@ public class CampaignService {
 		}
 	}
 	
+	public void modifyProductStatus(String memberId, MemberProduct memberProduct) {
+		memberProduct.setMemberId(memberId);
+		memberProduct.setProductId(memberProduct.getProductId());
+		memberProduct.setOnOffYn(memberProduct.getOnOffYn()); 
+		memberProductRepository.modifyProductStatus(memberProduct);
+	}
+	
 }

@@ -20,5 +20,7 @@ public interface MemberProductRepository {
 	void updateMemberProductAllOff(MemberProduct memberProduct);
 	
 	int updateOnMemberProduct(Map<String,Object> data);
+	
+	void modifyProductStatus(MemberProduct memberProduct);
 
 }

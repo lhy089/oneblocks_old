@@ -58,4 +58,13 @@
             	#{productId}
         	</foreach>
 	</update>
+	
+	<update id="modifyProductStatus" parameterType="com.oneblocks.domain.MemberProduct">
+		UPDATE	MEMBER_PRODUCT
+		SET 	ON_OFF_YN =#{onOffYn}
+				, UPDATE_DT = NOW()
+		WHERE 1=1
+			AND MEMBER_ID=#{memberId}
+			AND PRODUCT_ID = #{productId}
+	</update>
 </mapper>

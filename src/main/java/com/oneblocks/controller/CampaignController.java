@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.oneblocks.configuration.RequestConfiguration;
 import com.oneblocks.domain.Campaign;
 import com.oneblocks.domain.Member;
+import com.oneblocks.domain.MemberProduct;
 import com.oneblocks.domain.Paging;
 import com.oneblocks.domain.Product;
 import com.oneblocks.parameter.CampaignFormParam;
@@ -248,5 +249,16 @@ public class CampaignController {
  
 		 resultMap.put("resultCd", "SUCCESS");
 		 return resultMap;
+	 }
+	 
+	 @PostMapping("/modify/productStatus")
+	 @ResponseBody
+	 public Map<String, Object> modifyProductStatus(@RequestBody MemberProduct memberProduct, HttpSession session) {
+		 String memberId = ((Member) session.getAttribute("loginMemberInfo")).getMemberId();
+		 campaignService.modifyProductStatus(memberId, memberProduct);
+		 Map<String, Object> resultMap = new HashMap<String, Object>();
+		 resultMap.put("resultCd", "SUCCESS");
+		return resultMap;
+		 
 	 }
 }

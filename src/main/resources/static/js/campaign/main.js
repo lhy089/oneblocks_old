@@ -48,11 +48,11 @@ function deleteCampaign() {
 			campaignIdList.push(campaign.value);
 		});
 		
-		deleteCampaign(campaignIdList);
+		deleteCampaignInfo(campaignIdList);
 	}
 }
 
-function deleteCampaign(campaignIdList) {
+function deleteCampaignInfo(campaignIdList) {
 	$.ajax({
 			url: "/campaign/delete",
 			type: "POST",
@@ -77,10 +77,36 @@ function toggleCampaign(campaignId, flag) {
 		if(confirm("캠페인 상품 추적을 멈추시겠습니까?")) {
 			var campaignIdList = [];
 			campaignIdList.push(campaignId);
-			deleteCampaign(campaignIdList);
+			deleteCampaignInfo(campaignIdList);
 		}
 	}else {
 		modifyCampaign(campaignId);
+	}
+}
+
+function toggleProduct(productId, flag, e){ debugger;
+	if(confirm("옵션의 상태를 변경하시겠습니까?")) {
+		var memberProduct = {
+			"productId" : productId,
+			"onOffYn" : flag
+		}
+		$.ajax({
+			url: "/campaign/modify/productStatus",
+			type: "POST",
+			data: JSON.stringify(memberProduct),
+			contentType : 'application/json; charset=UTF-8',
+			dataType : 'json',
+			async: false,
+			success: function(data) 
+			{ 
+				alert("처리 되었습니다.");
+				productListInit($("#campaignId").val(),'date',$('#pageBtn[class="active"]').data().value,'');
+			},
+			error: function(data) 
+			{
+				console.log("AJAX Request 실패");
+			}
+		});
 	}
 }
 
