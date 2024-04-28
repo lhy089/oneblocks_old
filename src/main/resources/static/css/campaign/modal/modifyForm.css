@@ -1,0 +1,76 @@
+.tbodyScroll {
+	display: block;
+    max-height: 100px;
+    overflow-y: scroll;
+}
+ 
+.trScroll {
+	display: table;
+	width: 100%;
+}
+
+#modifyModalLabel {
+	font-size: 20px; 
+	font-weight: bold;
+}
+
+.tbodyScroll {
+ 	display: block;
+    max-height: 100px;
+    overflow-y: auto;
+ }
+ 
+.trScroll {
+  display: table;
+  width: 100%;
+}
+
+#mainForm {
+	padding: 20px 10px 10px 10px;
+}
+
+.width15p {
+	width: 15%;
+}
+
+.width73p {
+	width: 73%;
+}
+
+.width12p {
+	width: 12%;
+}
+
+.width10p {
+	width: 10%;
+}
+
+.width20p {
+	width: 20%;
+}
+
+.width70p {
+	width: 70%;
+}
+.custom-background-color-Y {
+	background-color:#F6BE2C;
+}
+
+.custom-btn-background-color-G {
+	--bs-table-bg: #9BA5B7;
+}
+
+.custom-modal-div {
+	margin: 0 20px; 
+	background-color: white;
+}
+
+.custom-modal-table {
+	background-color: white; 
+	width: 100%; 
+	text-align: center;
+}
+
+.productlabel {
+	padding: 15px 15px 5px 10px;
+}

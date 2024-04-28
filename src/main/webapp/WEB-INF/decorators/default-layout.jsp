@@ -44,5 +44,13 @@
 	</div> 
 </div>
 
+<div class="modal fade" id="modifyModal" style="--bs-modal-width: 60%;" tabindex="-1" aria-labelledby="modifyModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content" style="background-color: #EEF1F4;">
+			<!-- campaignDialog.jsp -->
+		</div>								
+	</div> 
+ </div>
+
 </body>
 </html>

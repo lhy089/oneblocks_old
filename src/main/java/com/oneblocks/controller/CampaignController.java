@@ -21,6 +21,7 @@ import com.oneblocks.domain.Paging;
 import com.oneblocks.domain.Product;
 import com.oneblocks.parameter.CampaignFormParam;
 import com.oneblocks.parameter.CampaignListSearchParam;
+import com.oneblocks.parameter.CampaignModifyParam;
 import com.oneblocks.parameter.SearchParam;
 import com.oneblocks.service.CampaignService;
 import com.oneblocks.utils.CampaignUtil;
@@ -217,7 +218,35 @@ public class CampaignController {
 	 }
 
 	 @GetMapping("/modal/modifyForm")
-	 public void campaignModifyForm(Model model) {
+	 public void campaignModifyForm(String campaignId, Model model, HttpSession session) {
+		 Member member = (Member) session.getAttribute("loginMemberInfo");
 
+		 Campaign campaign = new Campaign();
+		 campaign.setCampaignId(campaignId);
+		 campaign = campaignService.getCampaignInfo(campaign);
+
+		 CampaignModifyParam campaignModifyParam = new CampaignModifyParam();
+		 campaignModifyParam.setMemberId(member.getMemberId());
+		 campaignModifyParam.setCampaignId(campaignId);
+		 campaignModifyParam.setProductFlag("O");
+		 List<CampaignModifyParam> optionList = campaignService.getProductList(campaignModifyParam);
+		 
+		 campaignModifyParam.setProductFlag("S");
+		 List<CampaignModifyParam> supplementList = campaignService.getProductList(campaignModifyParam);
+
+		 model.addAttribute("campaign", campaign);
+		 model.addAttribute("optionList", optionList);
+		 model.addAttribute("supplementList", supplementList);
+	 }
+
+	 @PostMapping("/modify/on")
+	 @ResponseBody
+	 public Map<String, Object> modifyCampaign(@RequestBody CampaignFormParam campaignFormParam, HttpSession session) {
+		 Map<String, Object> resultMap = new HashMap<String, Object>();
+		 Member member = (Member) session.getAttribute("loginMemberInfo");		 
+		 campaignService.modifyCampaign(member.getMemberId(),campaignFormParam);
+ 
+		 resultMap.put("resultCd", "SUCCESS");
+		 return resultMap;
 	 }
 }

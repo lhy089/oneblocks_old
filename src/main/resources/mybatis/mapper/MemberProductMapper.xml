@@ -23,4 +23,39 @@
    	 	</foreach>
 	</insert>
 	
+	<select id="getProductList" parameterType="com.oneblocks.parameter.CampaignModifyParam" resultType="com.oneblocks.parameter.CampaignModifyParam">
+		 SELECT 
+ 				MP.ON_OFF_YN 			as onOffYn
+ 				, P.PRODUCT_ID			as productId
+ 				, P.PRODUCT_NAME		as productName
+ 				, P.PRODUCT_PRICE 		as productPrice 
+ 		FROM PRODUCT P
+ 			LEFT JOIN MEMBER_PRODUCT MP ON P.PRODUCT_ID = MP.PRODUCT_ID
+  		WHERE
+  			1=1 
+  			AND P.CAMPAIGN_ID=#{campaignId}
+  			AND P.PRODUCT_FLAG=#{productFlag}
+  			AND MP.MEMBER_ID=#{memberId}
+	</select>
+	
+	<update id="updateMemberProductAllOff" parameterType="com.oneblocks.domain.MemberProduct">
+		UPDATE	MEMBER_PRODUCT
+		SET 	ON_OFF_YN ="N"
+				, UPDATE_DT = NOW()
+		WHERE 1=1
+			AND MEMBER_ID=#{memberId}
+			AND CAMPAIGN_ID = #{campaignId}
+	</update>
+	
+	<update id="updateOnMemberProduct" parameterType="Map">
+		UPDATE	MEMBER_PRODUCT
+		SET 	ON_OFF_YN ="Y"
+				, UPDATE_DT = NOW()
+		WHERE 1=1
+			AND MEMBER_ID=#{memberId}
+			AND PRODUCT_ID IN
+			<foreach collection="productIdList" item="productId" index="index" separator="," open="(" close=")">
+            	#{productId}
+        	</foreach>
+	</update>
 </mapper>

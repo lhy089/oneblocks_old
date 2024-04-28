@@ -7,6 +7,10 @@ $(document).ready(function(){
 		deleteCampaign();
 	});
 	
+	$("#btnModifyCampaign").click(function() {
+		modifyCampaign($("#campaignId").val());
+	})
+	
 	campaignMainListInit();
 });
 
@@ -81,7 +85,8 @@ function toggleCampaign(campaignId, flag) {
 }
 
 function modifyCampaign(campaignId) {
-	callCampaignAddModal();
+	$("#modifyModal .modal-content").load("/campaign/modal/modifyForm?campaignId="+campaignId);
+	$("#modifyModal").modal("show");
 }
 	
 	

@@ -12,6 +12,4 @@ public class Product {
 	private String productRealName;
 	private String groupName;
 	private String productPrice;
-	
-//	private String onOffYn;
 }

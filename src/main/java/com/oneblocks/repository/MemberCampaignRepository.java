@@ -22,4 +22,5 @@ public interface MemberCampaignRepository {
 	
 	int setOffMemberCampaign(Map<String,Object> data);
 
+	void updateMemberCampaignInfo(MemberCampaign memberCampaign);
 }

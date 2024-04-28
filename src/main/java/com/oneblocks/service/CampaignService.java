@@ -15,6 +15,7 @@ import com.oneblocks.domain.MemberProduct;
 import com.oneblocks.domain.Product;
 import com.oneblocks.parameter.CampaignFormParam;
 import com.oneblocks.parameter.CampaignListSearchParam;
+import com.oneblocks.parameter.CampaignModifyParam;
 import com.oneblocks.parameter.SearchParam;
 import com.oneblocks.repository.CampaignRepository;
 import com.oneblocks.repository.CampaignSalesRepository;
@@ -159,9 +160,9 @@ public class CampaignService {
 		return result;
 	}
 	
-	public void saveNewCampaign(String memberId, CampaignFormParam campaignFormparam) {
+	public void saveNewCampaign(String memberId, CampaignFormParam campaignFormParam) {
 
-		Campaign campaign = campaignFormparam.getCampaign();
+		Campaign campaign = campaignFormParam.getCampaign();
 		String hisId = this.getMaxHistoryId(campaign);
 		
 		// 공용
@@ -169,16 +170,16 @@ public class CampaignService {
 		Campaign campaignInfo = this.getCampaignInfo(campaign);
 		
 		if(campaignInfo == null) {
-			this.saveCampaignInfo(campaignFormparam.getCampaign());
-			this.saveProductListInfo(campaignFormparam);
+			this.saveCampaignInfo(campaignFormParam.getCampaign());
+			this.saveProductListInfo(campaignFormParam);
 			hisId = "1";
 		}
 		
 		// 개인
 		// 무조건 insert , member_campaign, member_campaign_his
-		this.saveMemberCampaignInfo(campaignFormparam, memberId);
-		this.saveMemberCampaignHisInfo(campaignFormparam, memberId, hisId);
-		this.saveMemberProductInfo(campaignFormparam, memberId);
+		this.saveMemberCampaignInfo(campaignFormParam, memberId);
+		this.saveMemberCampaignHisInfo(campaignFormParam, memberId, hisId);
+		this.saveMemberProductInfo(campaignFormParam, memberId);
 
 	}
 	
@@ -273,6 +274,49 @@ public class CampaignService {
 		data.put("campaignIdList", campaignIdList);
 		memberCampaignRepository.setOffMemberCampaign(data);
 		memberCampaignHisRepository.setOffMemberCampaignHis(data);
+	}
+	
+	public List<CampaignModifyParam> getProductList(CampaignModifyParam campaignModifyParam) {
+		return memberProductRepository.getProductList(campaignModifyParam);
+	}
+	
+	public void modifyCampaign(String memberId, CampaignFormParam campaignFormParam) {
+		Campaign campaign = campaignFormParam.getCampaign();
+		String hisId = this.getMaxHistoryId(campaign);
+		
+		this.modifyMemberCampaignInfo(campaignFormParam, memberId);
+		this.modifyMemberCampaignHisInfo(campaignFormParam, memberId, hisId);
+		this.modifyMemberProductInfo(campaignFormParam, memberId);
+	}
+	
+	public void modifyMemberCampaignInfo(CampaignFormParam campaignFormparam, String memberId) {
+		MemberCampaign memberCampaign = new MemberCampaign();
+		memberCampaign.setMemberId(memberId);
+		memberCampaign.setCampaignId(campaignFormparam.getCampaign().getCampaignId());
+		memberCampaign.setOnOffYn("Y");
+		memberCampaignRepository.updateMemberCampaignInfo(memberCampaign);	
+	}
+	
+	public void modifyMemberCampaignHisInfo(CampaignFormParam campaignFormParam, String memberId, String hisId) {
+		MemberCampaignHis memberCampaignHis = new MemberCampaignHis();
+		memberCampaignHis.setMemberId(memberId);
+		memberCampaignHis.setCampaignId(campaignFormParam.getCampaign().getCampaignId());
+		memberCampaignHis.setHisId(hisId);
+		memberCampaignHisRepository.insertMemberCampaignOnHistory(memberCampaignHis);
+	}
+	
+	public void modifyMemberProductInfo(CampaignFormParam campaignFormParam, String memberId) {
+		MemberProduct memberProduct = new MemberProduct();
+		memberProduct.setMemberId(memberId);
+		memberProduct.setCampaignId(campaignFormParam.getCampaign().getCampaignId());
+		memberProductRepository.updateMemberProductAllOff(memberProduct);
+		
+		Map<String, Object> data = new HashMap<String, Object>();
+		data.put("memberId", memberId);
+		data.put("productIdList", campaignFormParam.getProductIdList());
+		if(campaignFormParam.getProductIdList().size() > 0 ) {
+			memberProductRepository.updateOnMemberProduct(data);
+		}
 	}
 	
 }

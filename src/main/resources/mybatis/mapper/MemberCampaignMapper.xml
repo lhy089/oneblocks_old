@@ -83,5 +83,14 @@
             	#{campaignId}
         	</foreach>
 	</update>
+	
+	<update id="updateMemberCampaignInfo" parameterType="com.oneblocks.domain.MemberCampaign"> 
+		UPDATE	MEMBER_CAMPAIGN
+		SET 	ON_OFF_YN = #{onOffYn}
+			,	UPDATE_DT = NOW()
+		WHERE 1=1
+			AND MEMBER_ID= #{memberId}
+			AND CAMPAIGN_ID = #{campaignId}
+	</update>
 
 </mapper>
