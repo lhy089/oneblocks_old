@@ -98,8 +98,8 @@ function setCampaignTableParam(salesList) {
 
 function pasingParam(listSize, paging) {
 	if(listSize > 0) {
-		paging.isPrev = paging.isPrev !=0 ? true : false;
-		paging.isNext = paging.isNext !=0 ? true : false;
+		paging.isPrev = paging.prev !=0 ? true : false;
+		paging.isNext = paging.next !=0 ? true : false;
 		paging.num = [];
 		for(var i = paging.first; i<=paging.last; i++) {
 			if(paging.pageNum == i) {

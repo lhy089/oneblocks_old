@@ -263,4 +263,8 @@ public class CampaignService {
 		}
 	}
 	
+	public Product getProductByProductId(CampaignListSearchParam campaignListSearchParam) {
+		return productRepository.getProductByProductId(campaignListSearchParam);
+	}
+	
 }

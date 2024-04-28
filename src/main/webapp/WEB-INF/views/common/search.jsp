@@ -2,7 +2,7 @@
 <script src="../resources/js/common/search.js?t=<%= new java.util.Date() %>"></script>
 <link href="../resources/css/common/search.css?t=<%= new java.util.Date() %>" rel="stylesheet" />
 
-<div id="pageRoute" style="display:none;"><a href="">N 판매량 조회</a></div>
+<div id="pageRoute" style="display:none;"><a href="" id="main2">N 판매량 조회</a></div>
 <nav class="navbar navbar-expand-lg search-nav">		
   <div class="container-fluid">
     <h4 id="pageName">N 판매량 조회</h4>
@@ -46,8 +46,8 @@
         
       </ul>
       <form class="d-flex a" role="search" id="searchForm"> 
-      	<i class="fa-solid fa-angle-left fa-2x search-element" onclick="productList('prev')" style="cursor:pointer;"></i>
-      	<select id="dateFlag" name="dateFlag" onchange="productList('select')" size="1" class="search-element">
+      	<i class="fa-solid fa-angle-left fa-2x search-element" onclick="productList('','prev')" style="cursor:pointer;"></i>
+      	<select id="dateFlag" name="dateFlag" onchange="productList('','select')" size="1" class="search-element">
       		{{#options}}
 				<option value="{{val}}" {{#sel}}selected{{/sel}}>{{txt}}</option>
 			{{/options}}
@@ -57,7 +57,29 @@
       	<label class="search-element">~</label> 
       	<input type="date" id="endDate" name="endDate" class="datepicker form-control search-element" value="{{endDate}}">
 
-		<i class="fa-solid fa-angle-right fa-2x" onclick="productList('next')" style="cursor:pointer;" ></i>
+		<i class="fa-solid fa-angle-right fa-2x" onclick="productList('','next')" style="cursor:pointer;" ></i>
+      </form>
+  {{/searchParam}}
+</script>
+
+<script id="productDetailSearchTemplate" type="x-tmpl-mustache">
+ {{#searchParam}}
+	<ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        
+      </ul>
+      <form class="d-flex a" role="search" id="searchForm"> 
+      	<i class="fa-solid fa-angle-left fa-2x search-element" onclick="productDetail('','prev')" style="cursor:pointer;"></i>
+      	<select id="dateFlag" name="dateFlag" onchange="productDetail('','select')" size="1" class="search-element">
+      		{{#options}}
+				<option value="{{val}}" {{#sel}}selected{{/sel}}>{{txt}}</option>
+			{{/options}}
+		</select>
+		<input type="hidden" id="flag" name="flag" value="{{flag}}"/>
+      	<input type="date" id="startDate" name="startDate" class="datepicker form-control search-element" value="{{startDate}}"> 
+      	<label class="search-element">~</label> 
+      	<input type="date" id="endDate" name="endDate" class="datepicker form-control search-element" value="{{endDate}}">
+
+		<i class="fa-solid fa-angle-right fa-2x" onclick="productDetail('','next')" style="cursor:pointer;" ></i>
       </form>
   {{/searchParam}}
 </script>

@@ -13,4 +13,15 @@
    	 		PRODUCT_REAL_NAME = #{productRealName},
    	 		GROUP_NAME = #{groupName}
 	</insert>
+	
+	<select id="getProductByProductId" parameterType="com.oneblocks.parameter.CampaignListSearchParam" resultType="com.oneblocks.domain.Product">
+		 SELECT 
+ 				P.PRODUCT_ID			as productId
+ 				, P.PRODUCT_NAME		as productName
+ 				, P.PRODUCT_PRICE 		as productPrice 
+ 		FROM PRODUCT P
+  		WHERE
+  			1=1 
+  			AND P.PRODUCT_ID=#{productId}
+	</select>
 </mapper>

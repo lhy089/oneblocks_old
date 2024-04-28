@@ -21,17 +21,12 @@
 				<button class="btn" style="border: solid 1px; background-color:#F6BE2C; display:none;" id="btnModifyCampaign" type="button">캠페인설정변경</button>
 				
 				<input type="hidden" id="campaignId" value=""/>
+				<input type="hidden" id="productId" value=""/>
 				
 				<div class="custom-float-right">
 
 					<form action="/campaign/campaignList/excel" method="POST"
 						name="excelForm" id="excelForm">
-						<input type="hidden" name="campaignId" id="campaignId" value="">
-						<input type="hidden" name="campaignName" value=""> <input
-							type="hidden" name="startDate" id="startDate" value="240422">
-						<input type="hidden" name="endDate" id="endDate" value="240422">
-						<input type="hidden" name="dateFlag" id="dateFlag"
-							value="yesterday">
 					</form>
 					<button class="btn custom_borderBasic" id="btnExcelDownload" type="submit" form="excelForm">엑셀
 						다운로드</button>
@@ -66,7 +61,7 @@
 {{#salesList}}
 <tr data-index="0" {{^onOffYn}} style ="--bs-table-bg: #EEF1F4;"{{/onOffYn}} >
 	<td><input type='checkbox' name='campaignId' value='{{campaignId}}'/></td>
-	<td><a href="#" onclick="productList('{{campaignId}}')">{{memberCampaignName}}</a></td>
+	<td><a href="javascript:void(0);" onclick="productList('{{campaignId}}'); return false;">{{memberCampaignName}}</a></td>
 	{{#onOffYn}} 
 		<td>
 			<svg class="svg-inline--fa fa-toggle-on" name="toggleOnOff" value='{{campaignId}}' aria-hidden="true" data-prefix="fas" data-icon="toggle-on" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" data-fa-i2svg="" style="color: #F6BE2C; font-size: 25px; cursor:pointer;">
@@ -103,7 +98,7 @@
 	<thead>
 		<tr>
 			<th scope="col"><input type="checkbox" name="campaignChk" id="campaignChk" value=""></th>
-			<th scope="col"><a href="#" class="datatable-sorter" data-value="c" data-order="A" >캠페인명 <i class="fa-solid fa-sort-up"></i></a></th>
+			<th scope="col"><a href="#" class="datatable-sorter" data-value="c" data-order="A" >옵션명 <i class="fa-solid fa-sort-up"></i></a></th>
 			<th scope="col"><a href="#" class="datatable-sorter" data-value="o" >On/Off</a></th>
 			<th scope="col"><a href="#" class="datatable-sorter" data-value="p">판매가</a></th>
 			<th scope="col"><a href="#" class="datatable-sorter" data-value="q">판매수량</a></th>
@@ -115,7 +110,7 @@
 {{#salesList}}
 <tr data-index="0" {{^onOffYn}} style ="--bs-table-bg: #EEF1F4;"{{/onOffYn}} >
 	<td><input type='checkbox' name='productId' value='{{productId}}'/></td>
-	<td><a href="#" onclick="productDetail('{{productId}}')" >{{productName}}</a></td>
+	<td><a href="javascript:void(0);" onclick="productDetail('{{productId}}'); return false;" >{{productName}}</a></td>
 	{{#onOffYn}} 
 		<td>
 			<svg class="svg-inline--fa fa-toggle-on" name="toggleOnOff" value='{{productId}}' aria-hidden="true" data-prefix="fas" data-icon="toggle-on" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" data-fa-i2svg="" style="color: #F6BE2C; font-size: 25px; cursor:pointer;">
@@ -136,6 +131,11 @@
 	<td>{{totalSalesQuantity}}</td>
 	<td>{{totalSalesRevenue}}</td>
 	<td>{{updateDate}}</td>
+</tr>
+{{/salesList}}
+{{^salesList}}
+<tr data-index="0" class="center"> 
+	<td colspan="7">조회할 데이터가 없습니다.</td>
 </tr>
 {{/salesList}}
 	</tbody>
@@ -163,6 +163,11 @@
 	<td>{{totalSalesQuantity}}</td>
 	<td>{{totalSalesRevenue}}</td>
 	<td>{{updateDate}}</td>
+</tr>
+{{/salesList}}
+{{^salesList}}
+<tr data-index="0" class="center"> 
+	<td colspan="6">조회할 데이터가 없습니다.</td>
 </tr>
 {{/salesList}}
 	</tbody>

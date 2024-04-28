@@ -50,7 +50,7 @@ public class CampaignController {
 	
 	@PostMapping("/main")
 	@ResponseBody
-	@RequestConfiguration
+//	@RequestConfiguration
 	@Operation(summary = "메인 화면", description = "캠페인 판매량 화면을 조회한다")
 	public Map<String, Object> main(@RequestBody SearchParam searchParam, HttpSession session) {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
@@ -167,12 +167,14 @@ public class CampaignController {
 		campaignListSearchParam.setDateList(onDateList);
 		
 		List<ProductSalesVO> salesList = campaignService.getProductSalesByProductId(campaignListSearchParam);
+		Product product = campaignService.getProductByProductId(campaignListSearchParam);
 		
 		PagingUtil paging = new PagingUtil();
         // 한 화면에 보여질 데이터 수, 한 화면에 보여지는 페이지 수, 현재 페이지, 전체 데이터 갯수
         Paging page = paging.initPaginationInfo(10, 10, searchParam.getPageNum(), salesList.size());
         List<ProductSalesVO> newsListForPaging = paging.getListForCurrentPage2(salesList);
 		
+        resultMap.put("product", product);
 		resultMap.put("salesList", newsListForPaging);
 		resultMap.put("searchParam", searchParam);
 		resultMap.put("paging", page);
