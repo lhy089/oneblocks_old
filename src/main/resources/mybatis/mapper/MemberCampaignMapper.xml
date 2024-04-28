@@ -3,7 +3,7 @@
 
 <mapper namespace="com.oneblocks.repository.MemberCampaignRepository">
 
-	<select id="getList" parameterType="com.oneblocks.parameter.CampaignListSearchParam" resultType="com.oneblocks.vo.NSalesVO">
+	<select id="getList" parameterType="String" resultType="com.oneblocks.vo.NSalesVO">
 		SELECT  
 			MC.CAMPAIGN_ID					as campaignId
 			, MC.MEMBER_CAMPAIGN_NAME 		as memberCampaignName
@@ -15,16 +15,6 @@
 		WHERE 1=1
 			AND MC.MEMBER_ID = #{memberId}
 		ORDER BY MC.MEMBER_CAMPAIGN_NAME
-<!-- 		<if test="!searchParam.orderFlag.equals('') and searchParam.orderFlag!=null"> -->
-<!-- 			<choose> -->
-<!-- 				<when test="searchParam.orderFlag eq 'c'.toString()"> -->
-<!-- 					MC.MEMBER_CAMPAIGN_NAME ${searchParam.orderKind} -->
-<!-- 				</when> -->
-<!-- 				<when test="searchParam.orderFlag eq 'o'.toString()"> -->
-<!-- 					MC.ON_OFF_YN ${searchParam.orderKind}, MC.MEMBER_CAMPAIGN_NAME -->
-<!-- 				</when> -->
-<!-- 			</choose> -->
-<!-- 		</if> -->
 	</select>
 	
 	<select id="checkDuplicationCampaignName" parameterType="com.oneblocks.domain.MemberCampaign" resultType="String">

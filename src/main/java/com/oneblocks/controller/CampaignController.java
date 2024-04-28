@@ -1,9 +1,16 @@
 package com.oneblocks.controller;
 
+import java.io.IOException;
+import java.net.URLEncoder;
+import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -23,6 +30,7 @@ import com.oneblocks.domain.Product;
 import com.oneblocks.parameter.CampaignFormParam;
 import com.oneblocks.parameter.CampaignListSearchParam;
 import com.oneblocks.parameter.CampaignModifyParam;
+import com.oneblocks.parameter.ExcelDownloadParam;
 import com.oneblocks.parameter.SearchParam;
 import com.oneblocks.service.CampaignService;
 import com.oneblocks.utils.CampaignUtil;
@@ -33,6 +41,8 @@ import com.oneblocks.vo.ProductSalesVO;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
 @Controller
@@ -65,10 +75,7 @@ public class CampaignController {
 		 * 내가 등록한 모든 캠페인
 		 */
 		Member member = (Member) session.getAttribute("loginMemberInfo");
-		CampaignListSearchParam campaignListSearchParam = new CampaignListSearchParam();
-		campaignListSearchParam.setSearchParam(searchParam);
-		campaignListSearchParam.setMemberId(member.getMemberId());
-		List<NSalesVO> myCampaignList = campaignService.getList(campaignListSearchParam);
+		List<NSalesVO> myCampaignList = campaignService.getList(member.getMemberId());
 		
 		List<NSalesVO> salesList = campaignService.getCampaignSalesList(myCampaignList, member.getMemberId(), searchParam);
 		// 정렬
@@ -260,5 +267,94 @@ public class CampaignController {
 		 resultMap.put("resultCd", "SUCCESS");
 		return resultMap;
 		 
+	 }
+	 
+	 @PostMapping("/excel/download")
+	 @ResponseBody
+	 public void excelDownload(ExcelDownloadParam excelDownloadParam, HttpSession session, HttpServletResponse response ) throws IOException { 
+		 String pageName = excelDownloadParam.getPageName();
+		 /* startDate, endDate 날짜조건 계산 */
+		 SearchParam searchParam = SearchUtil.setSalesDate(excelDownloadParam.getSearchParam());
+		 Member member = (Member) session.getAttribute("loginMemberInfo");
+		 CampaignListSearchParam campaignListSearchParam = new CampaignListSearchParam();
+		 campaignListSearchParam.setSearchParam(searchParam);
+		 campaignListSearchParam.setCampaignId(excelDownloadParam.getCampaignId());
+		 campaignListSearchParam.setMemberId(member.getMemberId());
+
+		 List<Map<String,String>> onDateList = campaignService.getMyCampaignOnPeriod(campaignListSearchParam);
+		 campaignListSearchParam.setDateList(onDateList);
+
+		 Workbook workbook = new HSSFWorkbook();
+
+//		 if("PRODUCT".equals(pageName)) {
+			 List<ProductSalesVO> salesList = campaignService.getProductSalesList(campaignListSearchParam);
+
+			 Sheet sheet = workbook.createSheet("프로덕트");
+			 int rowNo = 0;
+
+			 Row headerRow = sheet.createRow(rowNo++);
+			 headerRow.createCell(0).setCellValue("옵션명");
+			 headerRow.createCell(1).setCellValue("판매가");
+			 headerRow.createCell(2).setCellValue("판매수량");
+			 headerRow.createCell(3).setCellValue("매출액");
+			 headerRow.createCell(4).setCellValue("업데이트");
+			 headerRow.createCell(5).setCellValue("On/Off");
+
+			 DecimalFormat df = new DecimalFormat("###,###");
+			 for (ProductSalesVO data : salesList) {
+				 Row row = sheet.createRow(rowNo++);
+				 row.createCell(0).setCellValue(data.getProductName());
+				 row.createCell(1).setCellValue(data.getProductPrice());
+				 row.createCell(2).setCellValue(data.getTotalSalesQuantity());
+				 row.createCell(3).setCellValue(data.getTotalSalesRevenue());
+				 row.createCell(4).setCellValue(data.getUpdateDate());
+				 row.createCell(5).setCellValue("Y".equals(data.getOnOffYn()) ? "ON" : "OFF");
+			 }
+
+			 sheet.setColumnWidth(0, 10000);
+			 sheet.setColumnWidth(1, 3000);
+			 sheet.setColumnWidth(2, 3000);
+			 sheet.setColumnWidth(3, 3000);
+			 sheet.setColumnWidth(4, 5000);
+			 sheet.setColumnWidth(5, 2000);
+//		 }else if("PRODUCTDETAIL".equals(pageName)) {
+//			 List<ProductSalesVO> salesList = campaignService.getProductSalesByProductId(campaignListSearchParam);
+//			 
+//			 Sheet sheet = workbook.createSheet("상세");
+//				int rowNo = 0;
+//				
+//				
+//				Row headerRow = sheet.createRow(rowNo++);
+//				headerRow.createCell(0).setCellValue("날짜");
+//				headerRow.createCell(1).setCellValue("성공여부");
+//				headerRow.createCell(2).setCellValue("판매가");
+//				headerRow.createCell(3).setCellValue("판매수량");
+//				headerRow.createCell(4).setCellValue("매출액");
+//				headerRow.createCell(5).setCellValue("업데이트");
+//				
+//				DecimalFormat df = new DecimalFormat("###,###");
+//				
+//				for (ProductSalesVO data : salesList) {
+//				    Row row = sheet.createRow(rowNo++);
+//				    row.createCell(0).setCellValue(data.getUpdateDate());
+//				    row.createCell(1).setCellValue("성공");
+//				    row.createCell(2).setCellValue(data.getProductPrice());
+//				    row.createCell(3).setCellValue(data.getTotalSalesQuantity());
+//				    row.createCell(4).setCellValue(data.getTotalSalesRevenue());
+//				    row.createCell(5).setCellValue(data.getUpdateDate());
+//				}
+//				
+//				sheet.setColumnWidth(0, 5000);
+//				sheet.setColumnWidth(1, 2000);
+//				sheet.setColumnWidth(2, 3000);
+//				sheet.setColumnWidth(3, 3000);
+//				sheet.setColumnWidth(4, 3000);
+//				sheet.setColumnWidth(5, 5000);
+//		 }
+		 response.setContentType("ms-vnd/excel");
+		 response.setHeader("Content-Disposition", "attachment;filename="+URLEncoder.encode("프로덕트", "UTF-8")+".xls");
+
+		 workbook.write(response.getOutputStream());
+		 workbook.close();
 	 }
 }

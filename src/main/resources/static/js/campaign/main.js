@@ -384,3 +384,16 @@ function setProductDetailPage(data) {
 	$("#orderFlag").val(data.searchParam.orderFlag);
 	$("#orderKind").val(data.searchParam.orderKind);
 }
+
+function submitExcelForm() { debugger;
+	$("#pageNameForExcel").val($("#pageName").val());
+	$("#campaignIdForExcel").val($("#campaignId").val());
+	$("#productIdForExcel").val($("#productId").val());
+	$("#startDateForExcel").val($("#startDate").val());
+	$("#endDateForExcel").val($("#endDate").val());
+	$("#orderFlagForExcel").val($("#orderFlag").val());
+	$("#orderKindForExcel").val($("#orderKind").val());
+	
+	document.excelForm.submit();
+}
+

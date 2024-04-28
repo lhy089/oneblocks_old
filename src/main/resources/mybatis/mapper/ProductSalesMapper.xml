@@ -49,7 +49,7 @@
 				SELECT PRODUCT_ID FROM PRODUCT WHERE CAMPAIGN_ID=#{campaignId}) 
 	GROUP BY productId
 	ORDER BY 
-		<if test="!searchParam.orderFlag.equals('') and searchParam.orderFlag!=null">
+		<if test="searchParam.orderFlag!=null and !searchParam.orderFlag.equals('')">
 			<choose>
 				<when test="searchParam.orderFlag eq 'c'.toString()">
 					productName ${searchParam.orderKind}

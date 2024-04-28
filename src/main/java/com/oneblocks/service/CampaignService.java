@@ -55,8 +55,8 @@ public class CampaignService {
 	@Autowired
 	private ProductSalesRepository productSalesRepository;
 	
-	public List<NSalesVO> getList(CampaignListSearchParam campaignListSearchParam) {
-		return memberCampaignRepository.getList(campaignListSearchParam);
+	public List<NSalesVO> getList(String memberId) {
+		return memberCampaignRepository.getList(memberId);
 	}
 	
 	public List<NSalesVO> getCampaignSalesList(List<NSalesVO> salesList, String memberId, SearchParam searchParam) {

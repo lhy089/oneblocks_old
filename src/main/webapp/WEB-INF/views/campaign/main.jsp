@@ -26,12 +26,18 @@
 				<input type="hidden" id="orderKind" value="ASC"/>
 				
 				<div class="custom-float-right">
-
-					<form action="/campaign/campaignList/excel" method="POST"
-						name="excelForm" id="excelForm">
-					</form>
-					<button class="btn custom_borderBasic" id="btnExcelDownload" type="submit" form="excelForm">엑셀
-						다운로드</button>
+					<form action="/campaign/excel/download" method="POST" name="excelForm" id="excelForm">
+						<input type="hidden" name="pageName" id="pageNameForExcel" value="">
+				    	<input type="hidden" name="campaignId" id="campaignIdForExcel" value="">
+						<input type="hidden" name="productId" id="productIdForExcel" value="">
+						<input type="hidden" name="searchParam.startDate" id="startDateForExcel" value="">
+						<input type="hidden" name="searchParam.endDate" id="endDateForExcel" value="">
+						<input type="hidden" name="searchParam.dateFlag" id="dateFlagForExcel" value="">
+						<input type="hidden" name="searchParam.flag" id="flagForExcel" value="date">
+						<input type="hidden" name="searchParam.orderFlag" id="orderFlagForExcel" value="">
+						<input type="hidden" name="searchParam.orderKind" id="orderKindForExcel" value="">
+				  	</form>
+					<button class="btn custom_borderBasic" type="button" onclick="submitExcelForm()" form="excelForm">엑셀 다운로드</button>
 				</div>
 			</div>
 
@@ -182,6 +188,7 @@
 </div>
 {{/paging}}
 </script>
+
 </body>
 
 </html>

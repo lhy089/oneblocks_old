@@ -12,7 +12,7 @@ import com.oneblocks.vo.NSalesVO;
 @Repository
 public interface MemberCampaignRepository {
 	
-	List<NSalesVO> getList(CampaignListSearchParam campaignListSearchParam);
+	List<NSalesVO> getList(String memberId);
 	
 	String checkDuplicationCampaignName(MemberCampaign memberCampaign);
 	
