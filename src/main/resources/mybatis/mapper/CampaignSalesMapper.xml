@@ -3,7 +3,7 @@
 
 <mapper namespace="com.oneblocks.repository.CampaignSalesRepository">
 
-	<select id="getMyCampaignSalesInfo" parameterType="Map" resultType="com.oneblocks.vo.NSalesVO"> 
+	<select id="getMyCampaignSalesInfo" parameterType="com.oneblocks.parameter.CampaignListSearchParam" resultType="com.oneblocks.vo.NSalesVO"> 
 		SELECT 
 				SUM(SALES_QUANTITY) 	AS totalSalesQuantity
 				, SUM(REVENUE) 			AS totalSalesRevenue 

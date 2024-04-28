@@ -3,9 +3,24 @@
 
 <mapper namespace="com.oneblocks.repository.MemberProductRepository">
 
-	<select id="getMyOnProductIfByCampaignId" parameterType="Map" resultType="String">
-		SELECT PRODUCT_ID FROM MEMBER_PRODUCT WHERE CAMPAIGN_ID = #{campaignId} AND MEMBER_ID = #{memberId} AND ON_OFF_YN="Y"
+	<select id="getMyOnProductIfByCampaignId" parameterType="com.oneblocks.domain.MemberProduct" resultType="String">
+		SELECT 
+			PRODUCT_ID 
+		FROM 
+			MEMBER_PRODUCT 
+		WHERE 1=1
+			AND CAMPAIGN_ID = #{campaignId} 
+			AND MEMBER_ID = #{memberId} 
+			AND ON_OFF_YN="Y"
 	</select>
 	
-
+	<insert id="insertMemberProductInfo" parameterType="java.util.List">
+    	INSERT INTO MEMBER_PRODUCT
+			(MEMBER_ID, CAMPAIGN_ID, PRODUCT_ID, ON_OFF_YN, REG_DT)
+		VALUES
+    	<foreach collection="list" item="item" separator=" , " >
+        	("${item.memberId}", "${item.campaignId}", "${item.productId}", "${item.onOffYn}", now())
+   	 	</foreach>
+	</insert>
+	
 </mapper>

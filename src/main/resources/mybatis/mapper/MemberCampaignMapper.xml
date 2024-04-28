@@ -12,7 +12,8 @@
 			, CASE WHEN MC.ON_OFF_YN='Y' THEN DATE_FORMAT(ADDDATE(NOW(), -1),'%Y-%m-%d')
 				ELSE DATE_FORMAT(UPDATE_DT,'%Y-%m-%d') END 					as updateDate
 		FROM MEMBER_CAMPAIGN MC
-		WHERE MC.MEMBER_ID = #{memberId}
+		WHERE 1=1
+			AND MC.MEMBER_ID = #{memberId}
 		ORDER BY MC.MEMBER_CAMPAIGN_NAME
 <!-- 		<if test="!searchParam.orderFlag.equals('') and searchParam.orderFlag!=null"> -->
 <!-- 			<choose> -->
@@ -26,60 +27,49 @@
 <!-- 		</if> -->
 	</select>
 	
-	<select id="getMyCampaignOnPeriod" parameterType="com.oneblocks.parameter.CampaignListSearchParam" resultType="Map">
-   		SELECT DATE_FORMAT(A.STARTDATE, '%y%m%d') AS startDate, DATE_FORMAT(A.ENDDATE, '%y%m%d') AS endDate FROM (
-	   		<![CDATA[
-			SELECT 
+	<select id="checkDuplicationCampaignName" parameterType="com.oneblocks.domain.MemberCampaign" resultType="String">
+      SELECT 
+			(
 				CASE
-					WHEN ( #{searchParam.startDate} <= DATE_FORMAT(ON_DATE, '%Y-%m-%d')
-		                		AND ( #{searchParam.endDate} BETWEEN DATE_FORMAT(ON_DATE, '%Y-%m-%d') AND DATE_FORMAT(IFNULL(OFF_DATE, NOW()), '%Y-%m-%d'))) 
-					THEN DATE_FORMAT(ON_DATE, '%Y-%m-%d')
-		  
-		         	WHEN ( #{searchParam.startDate} <= DATE_FORMAT(ON_DATE, '%Y-%m-%d') AND #{searchParam.endDate} >= DATE_FORMAT(IFNULL(OFF_DATE, NOW()), '%Y-%m-%d') ) 
-		         	THEN DATE_FORMAT(ON_DATE, '%Y-%m-%d') 
-		         
-		         	WHEN ( #{searchParam.startDate} BETWEEN DATE_FORMAT(ON_DATE, '%Y-%m-%d') AND DATE_FORMAT(IFNULL(OFF_DATE, NOW()), '%Y-%m-%d') )
-		              			AND #{searchParam.endDate} <= DATE_FORMAT(IFNULL(OFF_DATE, NOW()), '%Y-%m-%d') 
-		            THEN #{searchParam.startDate}
-		         
-		         	WHEN ( #{searchParam.startDate} BETWEEN DATE_FORMAT(ON_DATE, '%Y-%m-%d') AND DATE_FORMAT(IFNULL(OFF_DATE, NOW()), '%Y-%m-%d') )
-		              			AND #{searchParam.endDate} >= DATE_FORMAT(IFNULL(OFF_DATE, NOW()), '%Y-%m-%d') 
-		            THEN #{searchParam.startDate}
-	       		END AS startDate
-	       
-	       		, CASE
-					WHEN ( #{searchParam.startDate} <= DATE_FORMAT(ON_DATE, '%Y-%m-%d')
-		                		AND ( #{searchParam.endDate} BETWEEN DATE_FORMAT(ON_DATE, '%Y-%m-%d') AND DATE_FORMAT(IFNULL(OFF_DATE, NOW()), '%Y-%m-%d'))) 
-					THEN #{searchParam.endDate}
-		  
-		         	WHEN ( #{searchParam.startDate} <= DATE_FORMAT(ON_DATE, '%Y-%m-%d') AND #{searchParam.endDate} >= DATE_FORMAT(IFNULL(OFF_DATE, NOW()) , '%Y-%m-%d') ) 
-		         	THEN DATE_FORMAT(IFNULL(OFF_DATE, NOW()), '%Y-%m-%d')
-		         
-		         	WHEN ( #{searchParam.startDate} BETWEEN DATE_FORMAT(ON_DATE, '%Y-%m-%d') AND DATE_FORMAT(IFNULL(OFF_DATE, NOW()), '%Y-%m-%d') )
-		              			AND #{searchParam.endDate} <= DATE_FORMAT(IFNULL(OFF_DATE, NOW()), '%Y-%m-%d') 
-		            THEN #{searchParam.endDate}
-		         
-		         	WHEN ( #{searchParam.startDate} BETWEEN DATE_FORMAT(ON_DATE, '%Y-%m-%d') AND DATE_FORMAT(IFNULL(OFF_DATE, NOW()), '%Y-%m-%d') )
-		              			AND #{searchParam.endDate} >= DATE_FORMAT(IFNULL(OFF_DATE, NOW()), '%Y-%m-%d') 
-		            THEN DATE_FORMAT(IFNULL(OFF_DATE, NOW()), '%Y-%m-%d')
-	       		END AS endDate
-	       	FROM MEMBER_CAMPAIGN_HIS
-			WHERE  1=1
-				AND MEMBER_ID = #{memberId}
-	       		AND CAMPAIGN_ID = #{campaignId}
-	       		AND (
-	       				( #{searchParam.startDate} <= DATE_FORMAT(ON_DATE, '%Y-%m-%d')
-		                		AND ( #{searchParam.endDate} BETWEEN DATE_FORMAT(ON_DATE, '%Y-%m-%d') AND DATE_FORMAT(IFNULL(OFF_DATE, NOW()), '%Y-%m-%d')))
-	              		OR ( #{searchParam.startDate} <= DATE_FORMAT(ON_DATE, '%Y-%m-%d') AND #{searchParam.endDate} >= DATE_FORMAT(IFNULL(OFF_DATE, NOW()) , '%Y-%m-%d') )
-	              		OR (( #{searchParam.startDate} BETWEEN DATE_FORMAT(ON_DATE, '%Y-%m-%d') AND DATE_FORMAT(IFNULL(OFF_DATE, NOW()), '%Y-%m-%d') )
-		              			AND #{searchParam.endDate} <= DATE_FORMAT(IFNULL(OFF_DATE, NOW()), '%Y-%m-%d'))
-	              		OR (( #{searchParam.startDate} BETWEEN DATE_FORMAT(ON_DATE, '%Y-%m-%d') AND DATE_FORMAT(IFNULL(OFF_DATE, NOW()), '%Y-%m-%d') )
-		              			AND #{searchParam.endDate} >= DATE_FORMAT(IFNULL(OFF_DATE, NOW()), '%Y-%m-%d') )
-					) 
-			]]>
-		) A 
-		GROUP BY A.STARTDATE, A.ENDDATE
-	</select>
-	
+					WHEN EXISTS (
+						SELECT 
+							1
+						FROM MEMBER_CAMPAIGN MC
+						WHERE MC.MEMBER_ID = #{memberId}
+							AND MC.ON_OFF_YN='Y'
+							AND MC.MEMBER_CAMPAIGN_NAME =#{memberCampaignName}
+						)
+					THEN 'Y'
+					ELSE 'N'
+				END
+			) as EXISTS_YN
+		FROM DUAL
+   </select>
+   
+   <select id="checkDuplicationCampaign" parameterType="com.oneblocks.domain.MemberCampaign" resultType="String">
+      SELECT 
+			(
+				CASE
+					WHEN EXISTS (
+						SELECT 
+							1
+						FROM MEMBER_CAMPAIGN MC
+						WHERE MC.MEMBER_ID = #{memberId}
+							AND MC.ON_OFF_YN='Y'
+							AND MC.CAMPAIGN_ID =#{campaignId}
+						)
+					THEN 'Y'
+					ELSE 'N'
+				END
+			) as EXISTS_YN
+		FROM DUAL
+   </select>
+   
+   <insert id="insertMemberCampaignInfo" parameterType="com.oneblocks.domain.MemberCampaign">
+		INSERT INTO MEMBER_CAMPAIGN
+			(MEMBER_CAMPAIGN_NAME, MEMBER_ID, CAMPAIGN_ID, ON_OFF_YN, REG_DT, UPDATE_DT)
+		VALUES
+    	(#{memberCampaignName},#{memberId}, #{campaignId}, #{onOffYn}, NOW(), NOW()) 	
+	</insert>
 
 </mapper>

@@ -79,6 +79,7 @@ div.login-sub-item a {
     background-color: #9ebfed;
     border-radius: 10px;
     border: 1px solid lightgray;
+    text-align: center;
 }
 
 .formTop {top:-40px !important; left:10px !important;  padding:0 5px; font-size: 16px; font-weight:bold; color:#085cd1 !important;}

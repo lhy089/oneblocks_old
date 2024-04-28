@@ -24,23 +24,15 @@ function getCampaignInfo() {
 		success: function(data) 
 		{ 
 			$("input[name='productChk']").prop('checked',false);
-			
-			campaignObj = data.productInfo;
-			optionList = data.optionList;
-			supplementList = data.supplementList;
-			
-			$("#optionBody").empty();
-			$("#supplementBody").empty();
+			setData(data);
 			
 			var optionListData = {optionListData : optionList};
 			setTemplateView("optionBodyTemplate", "optionBody", optionListData);
     		
     		var supplementListData = {supplementListData : supplementList};
 			setTemplateView("supplementBodyTemplate", "supplementBody", supplementListData);
-			
-			$("#desc").removeClass("modal-hidden");
-			$(".datatable-container").removeClass("modal-hidden");
-			$(".modal-footer").removeClass("modal-hidden");
+		
+			setModalView();
 		},
 		error: function() 
 		{
@@ -58,4 +50,90 @@ function setCampaignUrl() {
 	}
 	
 	return campaignUrl;
+}
+
+function setData(data) {
+	campaignObj = data.productInfo;
+	optionList = data.optionList;
+	supplementList = data.supplementList;
+}
+
+function setModalView() {
+	$("#desc").removeClass("modal-hidden");
+	$(".datatable-container").removeClass("modal-hidden");
+	$(".modal-footer").removeClass("modal-hidden");
+}
+
+function saveCampaign() {
+	
+	var campaignFormParam = setCampaignFormParam();
+
+	$.ajax({
+		url: "/campaign/new",
+		type: "POST",
+		async: true,
+		data: JSON.stringify(campaignFormParam),
+        contentType : 'application/json; charset=UTF-8',
+        dataType : 'json',
+		success: function(data) 
+		{ 
+			if(data.resultCd == "DUPLECATIONNAME") {
+				alert("이미 등록된 캠페인명입니다.");
+			} else if(data.resultCd == "DUPLECATIONCAMPAIGN") {
+				alert("이미 등록된 캠페인입니다.");
+			}else if(data.resultCd == "SUCCESS") {
+				alert("저장되었습니다.");
+				location.reload(true);
+			}
+		},
+		beforeSend:function(){
+        	$('.wrap-loading').removeClass('display-none');
+   	 	},
+    	complete:function(){
+        	$('.wrap-loading').addClass('display-none');
+    	},
+		error: function() 
+		{
+			console.log("AJAX Request 실패");
+		}
+	});	
+}
+
+function setCampaignFormParam() {
+	var memberCampaignName = $("#campaignName").val();	
+	if(memberCampaignName == null || memberCampaignName =='') {
+		alert("캠페인 명을 입력하세요.");
+		return;
+	}
+	
+	campaignObj.campaignUrl = $("#campaignUrl").val();
+	campaignObj.optionCnt = optionList.length;
+	campaignObj.supplementCnt = supplementList.length;
+	
+	var productIdList = [];
+	
+	$.each($("input[name='optionId']:checked"), function(index, option) {
+		productIdList.push(option.value);
+	});
+	
+	$.each($("input[name='supplementId']:checked"), function(index, supplement) {
+		productIdList.push(supplement.value);
+	});
+	
+	var campaignFormParam = {
+			memberCampaignName : memberCampaignName,
+			campaign  : campaignObj,
+			optionList : optionList,
+			supplementList : supplementList,
+			productIdList : productIdList
+	}
+	
+	return campaignFormParam;
+}
+
+function handleOnInput(el, maxlength) {
+  if(el.value.length > maxlength)  {
+    el.value = el.value.substr(0, maxlength);
+    alert("캠페인명은 30자까지 입력할 수 있습니다.");
+  }
 }

@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.oneblocks.repository.MemberCampaignHisRepository">
+
+	<insert id="insertMemberCampaignOnHistory" parameterType="com.oneblocks.domain.MemberCampaignHis">
+		INSERT INTO MEMBER_CAMPAIGN_HIS
+			(HIS_ID, MEMBER_ID, CAMPAIGN_ID, ON_DATE)
+		VALUES
+    	(#{hisId}, #{memberId}, #{campaignId}, NOW()) 	
+	</insert>
+   
+   <select id="getMaxHistoryId" parameterType="String" resultType="String">
+		SELECT MAX(HIS_ID)+1 
+		FROM MEMBER_CAMPAIGN_HIS
+		WHERE 1=1
+			AND CAMPAIGN_ID = #{campaignId}
+	</select>
+	
+	<select id="getMyCampaignOnPeriod" parameterType="com.oneblocks.parameter.CampaignListSearchParam" resultType="Map">
+   		SELECT DATE_FORMAT(A.STARTDATE, '%y%m%d') AS startDate, DATE_FORMAT(A.ENDDATE, '%y%m%d') AS endDate FROM (
+	   		<![CDATA[
+			SELECT 
+				CASE
+					WHEN ( #{searchParam.startDate} <= DATE_FORMAT(ON_DATE, '%Y-%m-%d')
+		                		AND ( #{searchParam.endDate} BETWEEN DATE_FORMAT(ON_DATE, '%Y-%m-%d') AND DATE_FORMAT(IFNULL(OFF_DATE, NOW()), '%Y-%m-%d'))) 
+					THEN DATE_FORMAT(ON_DATE, '%Y-%m-%d')
+		  
+		         	WHEN ( #{searchParam.startDate} <= DATE_FORMAT(ON_DATE, '%Y-%m-%d') AND #{searchParam.endDate} >= DATE_FORMAT(IFNULL(OFF_DATE, NOW()), '%Y-%m-%d') ) 
+		         	THEN DATE_FORMAT(ON_DATE, '%Y-%m-%d') 
+		         
+		         	WHEN ( #{searchParam.startDate} BETWEEN DATE_FORMAT(ON_DATE, '%Y-%m-%d') AND DATE_FORMAT(IFNULL(OFF_DATE, NOW()), '%Y-%m-%d') )
+		              			AND #{searchParam.endDate} <= DATE_FORMAT(IFNULL(OFF_DATE, NOW()), '%Y-%m-%d') 
+		            THEN #{searchParam.startDate}
+		         
+		         	WHEN ( #{searchParam.startDate} BETWEEN DATE_FORMAT(ON_DATE, '%Y-%m-%d') AND DATE_FORMAT(IFNULL(OFF_DATE, NOW()), '%Y-%m-%d') )
+		              			AND #{searchParam.endDate} >= DATE_FORMAT(IFNULL(OFF_DATE, NOW()), '%Y-%m-%d') 
+		            THEN #{searchParam.startDate}
+	       		END AS startDate
+	       
+	       		, CASE
+					WHEN ( #{searchParam.startDate} <= DATE_FORMAT(ON_DATE, '%Y-%m-%d')
+		                		AND ( #{searchParam.endDate} BETWEEN DATE_FORMAT(ON_DATE, '%Y-%m-%d') AND DATE_FORMAT(IFNULL(OFF_DATE, NOW()), '%Y-%m-%d'))) 
+					THEN #{searchParam.endDate}
+		  
+		         	WHEN ( #{searchParam.startDate} <= DATE_FORMAT(ON_DATE, '%Y-%m-%d') AND #{searchParam.endDate} >= DATE_FORMAT(IFNULL(OFF_DATE, NOW()) , '%Y-%m-%d') ) 
+		         	THEN DATE_FORMAT(IFNULL(OFF_DATE, NOW()), '%Y-%m-%d')
+		         
+		         	WHEN ( #{searchParam.startDate} BETWEEN DATE_FORMAT(ON_DATE, '%Y-%m-%d') AND DATE_FORMAT(IFNULL(OFF_DATE, NOW()), '%Y-%m-%d') )
+		              			AND #{searchParam.endDate} <= DATE_FORMAT(IFNULL(OFF_DATE, NOW()), '%Y-%m-%d') 
+		            THEN #{searchParam.endDate}
+		         
+		         	WHEN ( #{searchParam.startDate} BETWEEN DATE_FORMAT(ON_DATE, '%Y-%m-%d') AND DATE_FORMAT(IFNULL(OFF_DATE, NOW()), '%Y-%m-%d') )
+		              			AND #{searchParam.endDate} >= DATE_FORMAT(IFNULL(OFF_DATE, NOW()), '%Y-%m-%d') 
+		            THEN DATE_FORMAT(IFNULL(OFF_DATE, NOW()), '%Y-%m-%d')
+	       		END AS endDate
+	       	FROM MEMBER_CAMPAIGN_HIS
+			WHERE  1=1
+				AND MEMBER_ID = #{memberId}
+	       		AND CAMPAIGN_ID = #{campaignId}
+	       		AND (
+	       				( #{searchParam.startDate} <= DATE_FORMAT(ON_DATE, '%Y-%m-%d')
+		                		AND ( #{searchParam.endDate} BETWEEN DATE_FORMAT(ON_DATE, '%Y-%m-%d') AND DATE_FORMAT(IFNULL(OFF_DATE, NOW()), '%Y-%m-%d')))
+	              		OR ( #{searchParam.startDate} <= DATE_FORMAT(ON_DATE, '%Y-%m-%d') AND #{searchParam.endDate} >= DATE_FORMAT(IFNULL(OFF_DATE, NOW()) , '%Y-%m-%d') )
+	              		OR (( #{searchParam.startDate} BETWEEN DATE_FORMAT(ON_DATE, '%Y-%m-%d') AND DATE_FORMAT(IFNULL(OFF_DATE, NOW()), '%Y-%m-%d') )
+		              			AND #{searchParam.endDate} <= DATE_FORMAT(IFNULL(OFF_DATE, NOW()), '%Y-%m-%d'))
+	              		OR (( #{searchParam.startDate} BETWEEN DATE_FORMAT(ON_DATE, '%Y-%m-%d') AND DATE_FORMAT(IFNULL(OFF_DATE, NOW()), '%Y-%m-%d') )
+		              			AND #{searchParam.endDate} >= DATE_FORMAT(IFNULL(OFF_DATE, NOW()), '%Y-%m-%d') )
+					) 
+			]]>
+		) A 
+		GROUP BY A.STARTDATE, A.ENDDATE
+	</select>
+
+</mapper>

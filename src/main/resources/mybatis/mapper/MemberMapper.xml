@@ -10,8 +10,8 @@
 			, USER_STATUS		as memberStatus
 		FROM 
 			MEMBER 
-		WHERE 
-			EMAIL = #{email}
+		WHERE 1=1
+			AND EMAIL = #{email}
 			AND PASSWORD = #{password}
 			AND USER_STATUS != 'D'
 	</select>

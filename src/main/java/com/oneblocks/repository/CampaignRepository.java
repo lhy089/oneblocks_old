@@ -9,5 +9,9 @@ import com.oneblocks.parameter.CampaignListSearchParam;
 public interface CampaignRepository {
 	
 	Campaign getCampaignByCampaignId(CampaignListSearchParam campaignListSearchParam);
+	
+	Campaign getCampaignInfo(Campaign campaign);
+	
+	void insertCampaignInfo(Campaign campaign);
 
 }

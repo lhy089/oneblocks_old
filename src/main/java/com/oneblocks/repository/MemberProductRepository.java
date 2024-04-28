@@ -5,9 +5,13 @@ import java.util.Map;
 
 import org.springframework.stereotype.Repository;
 
+import com.oneblocks.domain.MemberProduct;
+
 @Repository
 public interface MemberProductRepository {
 	
-	List<String> getMyOnProductIfByCampaignId(Map<String,String> data) ;
+	List<String> getMyOnProductIfByCampaignId(MemberProduct memberProduct) ;
+	
+	void insertMemberProductInfo(List<MemberProduct> memberProductList);
 
 }

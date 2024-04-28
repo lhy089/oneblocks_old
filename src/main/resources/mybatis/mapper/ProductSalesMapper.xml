@@ -33,7 +33,8 @@
 			, MAX(UPDATE_DATE)							as updateDate
 	FROM PRODUCT P
 	LEFT JOIN PRODUCT_SALES PS ON P.PRODUCT_ID = PS.PRODUCT_ID
-	WHERE P.PRODUCT_ID IN (
+	WHERE 1=1
+			AND P.PRODUCT_ID IN (
 				SELECT PRODUCT_ID FROM PRODUCT WHERE CAMPAIGN_ID=#{campaignId}) 
 			AND 
 			<foreach collection="dateList" item="date" index="index" separator="or" open="(" close=")">

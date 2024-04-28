@@ -12,8 +12,28 @@
 			, C.SUPPLEMENT_CNT 		AS supplementCnt
 			, C.REGISTRATION_DATE		AS registrationDate
  		FROM CAMPAIGN C
- 		WHERE C.CAMPAIGN_ID = #{campaignId}
+ 		WHERE 1=1
+			AND C.CAMPAIGN_ID = #{campaignId}
 	</select>
 	
+	<select id="getCampaignInfo" parameterType="com.oneblocks.domain.Campaign" resultType="com.oneblocks.domain.Campaign">
+		SELECT 
+			CAMPAIGN_ID				AS campaignId
+			, CAMPAIGN_NAME 		AS campaignName
+			, CAMPAIGN_URL			AS campaignUrl
+			, OPTION_CNT 			AS optionCnt
+			, SUPPLEMENT_CNT 		AS supplementCnt
+			, REGISTRATION_DATE		AS registrationDate
+ 		FROM CAMPAIGN 
+ 		WHERE 1=1
+			AND CAMPAIGN_ID = #{campaignId}
+	</select>
+	
+	<insert id="insertCampaignInfo" parameterType="com.oneblocks.domain.Campaign">
+		INSERT INTO CAMPAIGN 
+			(CAMPAIGN_ID, CAMPAIGN_NAME, CAMPAIGN_URL, OPTION_CNT, SUPPLEMENT_CNT, REGISTRATION_DATE) 
+			VALUES 
+			(#{campaignId}, #{campaignName}, #{campaignUrl}, #{optionCnt}, #{supplementCnt}, now())
+	</insert>
 
 </mapper>

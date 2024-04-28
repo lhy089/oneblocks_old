@@ -19,6 +19,7 @@ import com.oneblocks.domain.Campaign;
 import com.oneblocks.domain.Member;
 import com.oneblocks.domain.Paging;
 import com.oneblocks.domain.Product;
+import com.oneblocks.parameter.CampaignFormParam;
 import com.oneblocks.parameter.CampaignListSearchParam;
 import com.oneblocks.parameter.SearchParam;
 import com.oneblocks.service.CampaignService;
@@ -176,6 +177,30 @@ public class CampaignController {
 		resultMap.put("searchParam", searchParam);
 		resultMap.put("paging", page);
 		 
+		return resultMap;
+	}
+	
+	/*
+	  * 캠페인 추가
+	  */
+	 @PostMapping("/new")
+	 @Operation(summary = "캠페인추가", description = "캠페인추가")
+	 @ResponseBody
+	 public Map<String, Object> saveNewCampaign(@RequestBody CampaignFormParam campaignFormparam, HttpSession session) {
+		Member member = (Member) session.getAttribute("loginMemberInfo");
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+	
+		// 이미 등록된 캠페인명 : DUPLICATIONNAME : memberId, memberCampaignName 
+		// or 이미 등록된 캠페인 : DUPLICATIONCAMPAIGN : memberId, campaignId
+		String dupleChk = campaignService.checkDuplicationCampaignName(member.getMemberId(), campaignFormparam);
+		if(!"N".equals(dupleChk)) {
+			resultMap.put("resultCd", dupleChk);
+			return resultMap;
+		}
+		
+		campaignService.saveNewCampaign(member.getMemberId(), campaignFormparam);
+
+		resultMap.put("resultCd", "SUCCESS");
 		return resultMap;
 	}
 }
