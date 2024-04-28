@@ -4,9 +4,22 @@ $(document).ready(function(){
 	})
 });
 
-function campaignMainList(flag) {
-	var searchParam = setSearchParam(flag);
+function campaignMainListBySearch(flag) {
+	var param= {
+		flag: flag,
+		dateFlag: $("#dateFlag option:selected").val(),
+		startDate: $("#startDate").val(),
+		endDate: $("#endDate").val(),
+		orderFlag: $('[data-order="A"], [data-order="D"]').data('value'),
+		orderKind: $('.datatable-sorter').data('order') == 'ASC' ? 'ASC' : 'DESC',
+		pageNum: 1
+	};
 	
+	campaignMainList(param);
+}
+
+function campaignMainList(param) {
+	var searchParam = param;
 	$.ajax({
 		url: "/campaign/main",
 	    type: "POST",
@@ -17,21 +30,24 @@ function campaignMainList(flag) {
 	    success: function(data) 
 		{ debugger;
 			// 사이드바 세팅
-			if(flag == undefined){
+			if(data.myCampaignList != null) {
 				var myCampaignList = setCampaignListParam(data.myCampaignList);
 				setTemplateView("leftTemplate", "campaignNameList", myCampaignList);
 			}
-			
 			// search 바 세팅
 			var searchParam = setResutlSearchParam(data.searchParam);
 			setTemplateView("searchTemplate", "searchDiv", searchParam);
 					
-			// 메인 세이블 세팅
+			// 메인 테이블 세팅
+			var campaignHead = setCampaignHeadParam(data.searchParam);		
+			setTemplateView("campaignTableHeadTemplate", "tableHead", campaignHead);
 			var salesList = setCampaignTableParam(data.salesList);		
-			setTemplateView("campaignTableTemplate", "campaignTableDiv", salesList);
+			setTemplateView("campaignTableBodyTemplate", "tableBody", salesList);
 			
 			var paging = pasingParam(data.salesList.length, data.paging);
 			setTemplateView("paginationTemplate", "paginationDiv", paging);
+			
+			$("#pageName").data().value = "CAMPAIGN";
 			
 	    },
 	    error: function() 
@@ -41,34 +57,28 @@ function campaignMainList(flag) {
 	});
 }
 
-function setSearchParam(flag) {
-	var searchParam = {};
-	if(flag==null) {
-		searchParam = {
-			flag: "select",
-			dateFlag: "yesterday",
-			startDate: null,
-			endDate: null,
-			orderFlag: 'c',
-			orderKind: 'ASC',
-			pageNum: 1
-		};
-	} else {
-		searchParam = {
-			flag: flag,
-			dateFlag: $("#dateFlag option:selected").val(),
-			startDate: $("#startDate").val(),
-			endDate: $("#endDate").val(),
-			orderFlag: $('[data-order="A"], [data-order="D"]').data('value'),
-			orderKind: $('.datatable-sorter').data('order') == 'A' ? 'ASC' : 'DESC',
-			pageNum: 1
-		};
+function setCampaignHeadParam(searchParam) {
+	var options = [
+		{orderFlag:'c', headName:'캠페인명'},
+		{orderFlag:'o', headName:'On/Off'},
+		{orderFlag:'p', headName:'판매가'},
+		{orderFlag:'q', headName:'판매수량'},
+		{orderFlag:'r', headName:'매출액'},
+		{orderFlag:'u', headName:'업데이트'}
+	];
+	
+	for(var i=0; i<options.length; i++) {
+		if(options[i].orderFlag == searchParam.orderFlag) {
+			options[i].orderIcon = true;
+			options[i].orderClass = searchParam.orderKind=="ASC" ? 'fa-sort-up' : 'fa-sort-down';
+		}
 	}
 	
-	return searchParam;
-} 
+	var campaignHead = {campaignHead : options};
+	return campaignHead;
+}
 
-function setResutlSearchParam(searchParam) {
+function setResutlSearchParam(searchParam) { 
 	var options = [
 		{val:'none', txt:'날짜선택'},
 		{val:'yesterday', txt:'어제'},

@@ -5,7 +5,7 @@
 <div id="pageRoute" style="display:none;"><a href="" id="main2">N 판매량 조회</a></div>
 <nav class="navbar navbar-expand-lg search-nav">		
   <div class="container-fluid">
-    <h4 id="pageName">N 판매량 조회</h4>
+    <h4 id="pageName" data-value="CAMPAIGN">N 판매량 조회</h4>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="searchDiv" aria-controls="searchDiv" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -24,8 +24,8 @@
         
       </ul>
       <form class="d-flex a" role="search" action="/campaign/main" method="post" id="searchForm"> 
-      	<i class="fa-solid fa-angle-left fa-2x search-element" onclick="campaignMainList('prev')" style="cursor:pointer;"></i>
-      	<select id="dateFlag" name="dateFlag" onchange="campaignMainList('select')" size="1" class="search-element">
+      	<i class="fa-solid fa-angle-left fa-2x search-element" onclick="campaignMainListBySearch('prev')" style="cursor:pointer;"></i>
+      	<select id="dateFlag" name="dateFlag" onchange="campaignMainListBySearch('select')" size="1" class="search-element">
       		{{#options}}
 				<option value="{{val}}" {{#sel}}selected{{/sel}}>{{txt}}</option>
 			{{/options}}
@@ -35,7 +35,7 @@
       	<label class="search-element">~</label> 
       	<input type="date" id="endDate" name="endDate" class="datepicker form-control search-element" value="{{endDate}}">
 
-		<i class="fa-solid fa-angle-right fa-2x" onclick="campaignMainList('next')" style="cursor:pointer;" ></i>
+		<i class="fa-solid fa-angle-right fa-2x" onclick="campaignMainListBySearch('next')" style="cursor:pointer;" ></i>
       </form>
   {{/searchParam}}
 </script>
@@ -46,8 +46,8 @@
         
       </ul>
       <form class="d-flex a" role="search" id="searchForm"> 
-      	<i class="fa-solid fa-angle-left fa-2x search-element" onclick="productList('','prev')" style="cursor:pointer;"></i>
-      	<select id="dateFlag" name="dateFlag" onchange="productList('','select')" size="1" class="search-element">
+      	<i class="fa-solid fa-angle-left fa-2x search-element" onclick="productListInit('','prev','1','')" style="cursor:pointer;"></i>
+      	<select id="dateFlag" name="dateFlag" onchange="productListInit('','select','1','')" size="1" class="search-element">
       		{{#options}}
 				<option value="{{val}}" {{#sel}}selected{{/sel}}>{{txt}}</option>
 			{{/options}}
@@ -57,7 +57,7 @@
       	<label class="search-element">~</label> 
       	<input type="date" id="endDate" name="endDate" class="datepicker form-control search-element" value="{{endDate}}">
 
-		<i class="fa-solid fa-angle-right fa-2x" onclick="productList('','next')" style="cursor:pointer;" ></i>
+		<i class="fa-solid fa-angle-right fa-2x" onclick="productListInit('','next','1','')" style="cursor:pointer;" ></i>
       </form>
   {{/searchParam}}
 </script>
@@ -68,8 +68,8 @@
         
       </ul>
       <form class="d-flex a" role="search" id="searchForm"> 
-      	<i class="fa-solid fa-angle-left fa-2x search-element" onclick="productDetail('','prev')" style="cursor:pointer;"></i>
-      	<select id="dateFlag" name="dateFlag" onchange="productDetail('','select')" size="1" class="search-element">
+      	<i class="fa-solid fa-angle-left fa-2x search-element" onclick="productDetailInit('','prev','1','')" style="cursor:pointer;"></i>
+      	<select id="dateFlag" name="dateFlag" onchange="productDetailInit('','select','1','')" size="1" class="search-element">
       		{{#options}}
 				<option value="{{val}}" {{#sel}}selected{{/sel}}>{{txt}}</option>
 			{{/options}}
@@ -79,7 +79,7 @@
       	<label class="search-element">~</label> 
       	<input type="date" id="endDate" name="endDate" class="datepicker form-control search-element" value="{{endDate}}">
 
-		<i class="fa-solid fa-angle-right fa-2x" onclick="productDetail('','next')" style="cursor:pointer;" ></i>
+		<i class="fa-solid fa-angle-right fa-2x" onclick="productDetailInit('','next','1','')" style="cursor:pointer;" ></i>
       </form>
   {{/searchParam}}
 </script>

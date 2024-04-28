@@ -5,12 +5,82 @@ $(document).ready(function(){
 		$("#campaignModal").modal("show");
 	});
 	
-	campaignMainList();
+	campaignMainListInit();
 });
 
-function productList(campaignId, dateFlag) { debugger;
+// 최초진입, 새로고침
+function campaignMainListInit() {
+	var param = {
+			flag: "select",
+			dateFlag: "yesterday",
+			startDate: null,
+			endDate: null,
+			orderFlag: 'c',
+			orderKind: 'ASC',
+			pageNum: 1
+	};
 	
-	var campaignListSearchParam = setProductListSearchParam(campaignId, dateFlag);
+	campaignMainList(param);
+}
+
+function pageSelect(pageNum) {
+	var pageValue = $("#pageName").data().value;
+	if(pageValue == "CAMPAIGN") {
+		var param = {
+			flag: "date",
+			dateFlag: $("#dateFlag option:selected").val(),
+			startDate: $("#startDate").val(),
+			endDate: $("#endDate").val(),
+			orderFlag: $('[data-order="ASC"], [data-order="DESC"]').data('value'),
+			orderKind: $('.datatable-sorter').data('order') == 'ASC' ? 'ASC' : 'DESC',
+			pageNum: pageNum
+		};
+		
+		campaignMainList(param);
+	} else if(pageValue == "PRODUCT") {
+		productListInit('','date',pageNum,'');
+	} else if(pageValue == "DETAIL") {
+		productDetailInit('','date',pageNum,'');
+	}
+}
+
+function productListInit(campaignId,flag,pageNum,orderFlag) { debugger;
+	if(campaignId == "" || campaignId == null) {
+		campaignId = $("#campaignId").val();
+	}
+	
+	var orderKind = "";
+	if(orderFlag == "" || orderFlag == null) {
+		orderFlag = $("#orderFlag").val();
+		orderKind = $("#orderKind").val();
+	}else {
+		var beforeOrderFlag = $("#orderFlag").val();
+		if(beforeOrderFlag != orderFlag) {
+			orderKind = 'ASC';
+		}else {
+			orderKind = $("#orderKind").val() == 'ASC' ? 'DESC' : 'ASC';
+		}
+	}
+	
+	var searchParam = {
+			flag: flag,
+			dateFlag: $("#dateFlag option:selected").val(),
+			startDate: $("#startDate").val(),
+			endDate: $("#endDate").val(),
+			orderFlag: orderFlag,
+			orderKind: orderKind,
+			pageNum: pageNum
+	};
+	
+	var campaignListSearchParam = {
+		searchParam: searchParam,
+		campaignId: campaignId
+	}
+	
+	productList(campaignListSearchParam);
+} 
+
+function productList(campaignListSearchParam) { 
 	
 	$.ajax({
 		url: "/campaign/product",
@@ -25,12 +95,15 @@ function productList(campaignId, dateFlag) { debugger;
 			// search 바 세팅
 			var searchParam = setResutlSearchParam(data.searchParam);
 			setTemplateView("productSearchTemplate", "searchDiv", searchParam);
-					
+					debugger;
 			// 메인 테이블 세팅
-			var salesList = setCampaignTableParam(data.salesList);		
-			setTemplateView("productTableTemplate", "campaignTableDiv", salesList);
-			setProductPage(data.campaign);
+			var productHead = setProductHeadParam(data.searchParam);		
+			setTemplateView("productTableHeadTemplate", "tableHead", productHead);
 			
+			var salesList = setCampaignTableParam(data.salesList);		
+			setTemplateView("productTableBodyTemplate", "tableBody", salesList);
+			setProductPage(data);
+	
 			var paging = pasingParam(data.salesList.length, data.paging);
 			setTemplateView("paginationTemplate", "paginationDiv", paging);
 			
@@ -42,44 +115,97 @@ function productList(campaignId, dateFlag) { debugger;
 	});
 }
 
-function setProductListSearchParam(campaignId, dateFlag) {
-	if(campaignId == null || campaignId == '') {
-		campaignId = $("#campaignId").val();
+function setProductHeadParam(searchParam) {
+	var options = [
+		{orderFlag:'c', headName:'옵션명'},
+		{orderFlag:'o', headName:'On/Off'},
+		{orderFlag:'p', headName:'판매가'},
+		{orderFlag:'q', headName:'판매수량'},
+		{orderFlag:'r', headName:'매출액'},
+		{orderFlag:'u', headName:'업데이트'}
+	];
+	
+	for(var i=0; i<options.length; i++) {
+		if(options[i].orderFlag == searchParam.orderFlag) {
+			options[i].orderIcon = true;
+			options[i].orderClass = searchParam.orderKind=="ASC" ? 'fa-sort-up' : 'fa-sort-down';
+		}
 	}
-	if(dateFlag == null || dateFlag == '') {
-		dateFlag = "date";
+	
+	var productHead = {productHead : options};
+	return productHead;
+}
+
+function setProductDetailHeadParam(searchParam) {
+	var options = [
+		{orderFlag:'c', headName:'날짜'},
+		{orderFlag:'o', headName:'성공여부'},
+		{orderFlag:'p', headName:'판매가'},
+		{orderFlag:'q', headName:'판매수량'},
+		{orderFlag:'r', headName:'매출액'},
+		{orderFlag:'u', headName:'업데이트'}
+	];
+	
+	for(var i=0; i<options.length; i++) {
+		if(options[i].orderFlag == searchParam.orderFlag) {
+			options[i].orderIcon = true;
+			options[i].orderClass = searchParam.orderKind=="ASC" ? 'fa-sort-up' : 'fa-sort-down';
+		}
+	}
+	
+	var productDetailHead = {productDetailHead : options};
+	return productDetailHead;
+}
+
+function setProductPage(data) {
+	$("#pageName").text(data.campaign.campaignName);
+	$("#campaignId").val(data.campaign.campaignId);
+	$("#campaignAdd").hide();
+	$("#btnDeleteCampaign").hide();
+	$("#btnModifyCampaign").show();
+	$("#pageRoute").text($("#pageRoute").text() + " / " + data.campaign.campaignName);
+	$("#pageRoute").show();
+	$("#pageName").data().value = "PRODUCT";
+	$("#orderFlag").val(data.searchParam.orderFlag);
+	$("#orderKind").val(data.searchParam.orderKind);
+}
+
+function productDetailInit(productId, flag, pageNum, orderFlag) {
+	if(productId == null || productId == "") {
+		productId = $("#productId").val();
+	}
+	var orderKind = "";
+	if(orderFlag == "" || orderFlag == null) {
+		orderFlag = $("#orderFlag").val();
+		orderKind = $("#orderKind").val();
+	}else {
+		var beforeOrderFlag = $("#orderFlag").val();
+		if(beforeOrderFlag != orderFlag) {
+			orderKind = 'ASC';
+		}else {
+			orderKind = $("#orderKind").val() == 'ASC' ? 'DESC' : 'ASC';
+		}
 	}
 	var searchParam = {
-			flag: dateFlag,
+			flag: flag,
 			dateFlag: $("#dateFlag option:selected").val(),
 			startDate: $("#startDate").val(),
 			endDate: $("#endDate").val(),
-			orderFlag: $('[data-order="A"], [data-order="D"]').data('value'),
-			orderKind: $('.datatable-sorter').data('order') == 'A' ? 'ASC' : 'DESC',
-			pageNum: 1
+			orderFlag: orderFlag,
+			orderKind: orderKind,
+			pageNum: pageNum
 	};
 	
 	var campaignListSearchParam = {
 		searchParam: searchParam,
-		campaignId: campaignId
+		campaignId: $("#campaignId").val(),
+		productId: productId
 	}
 	
-	return campaignListSearchParam;
+	productDetail(campaignListSearchParam);
 }
 
-function setProductPage(campaign) { debugger;
-	$("#pageName").text(campaign.campaignName);
-	$("#campaignId").val(campaign.campaignId);
-	$("#campaignAdd").hide();
-	$("#btnDeleteCampaign").hide();
-	$("#btnModifyCampaign").show();
-	$("#pageRoute").text($("#pageRoute").text() + " / " + campaign.campaignName);
-	$("#pageRoute").show();
-}
-
-function productDetail(productId, dateFlag) {
-	
-	var campaignListSearchParam = setProductDetailSearchParam(productId, dateFlag);
+function productDetail(campaignListSearchParam) {
 	
 	$.ajax({
 		url: "/campaign/productDetail",
@@ -96,9 +222,12 @@ function productDetail(productId, dateFlag) {
 			setTemplateView("productDetailSearchTemplate", "searchDiv", searchParam);
 					
 			// 메인 테이블 세팅
-			var salesList = {salesList : data.salesList};
-			setTemplateView("productDetailTableTemplate", "campaignTableDiv", salesList);
-			setProductDetailPage(data.product);
+			var productDetailHead = setProductDetailHeadParam(data.searchParam);		
+			setTemplateView("productDetailTableHeadTemplate", "tableHead", productDetailHead);
+			
+			var salesList = setCampaignTableParam(data.salesList);		
+			setTemplateView("productDetailTableBodyTemplate", "tableBody", salesList);
+			setProductDetailPage(data);
 			
 			var paging = pasingParam(data.salesList.length, data.paging);
 			setTemplateView("paginationTemplate", "paginationDiv", paging);
@@ -125,8 +254,8 @@ function setProductDetailSearchParam(productId, dateFlag){
 			dateFlag: $("#dateFlag option:selected").val(),
 			startDate: $("#startDate").val(),
 			endDate: $("#endDate").val(),
-			orderFlag: $('[data-order="A"], [data-order="D"]').data('value'),
-			orderKind: $('.datatable-sorter').data('order') == 'A' ? 'ASC' : 'DESC',
+			orderFlag: $('[data-order="ASC"], [data-order="DESC"]').data('value'),
+			orderKind: $('.datatable-sorter').data('order') == 'ASC' ? 'ASC' : 'DESC',
 			pageNum: 1
 	};
 	
@@ -139,8 +268,11 @@ function setProductDetailSearchParam(productId, dateFlag){
 	return campaignListSearchParam;
 }
 
-function setProductDetailPage(product) {
-	$("#campaignId").val(prouct.productId);
-	$("#pageName").text(product.productName);
-	$("#pageRoute").text($("#pageRoute").text() + " / " + productName);
+function setProductDetailPage(data) {
+	$("#productId").val(data.product.productId);
+	$("#pageName").text(data.product.productName);
+//	$("#pageRoute").text($("#pageRoute").text() + " / " + productName);
+	$("#pageName").data().value = "DETAIL";
+	$("#orderFlag").val(data.searchParam.orderFlag);
+	$("#orderKind").val(data.searchParam.orderKind);
 }

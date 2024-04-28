@@ -48,7 +48,32 @@
 			AND P.PRODUCT_ID IN (
 				SELECT PRODUCT_ID FROM PRODUCT WHERE CAMPAIGN_ID=#{campaignId}) 
 	GROUP BY productId
-	ORDER BY productName 
+	ORDER BY 
+		<if test="!searchParam.orderFlag.equals('') and searchParam.orderFlag!=null">
+			<choose>
+				<when test="searchParam.orderFlag eq 'c'.toString()">
+					productName ${searchParam.orderKind}
+				</when>
+				<when test="searchParam.orderFlag eq 'o'.toString()">
+					onOffYn ${searchParam.orderKind}, productName
+				</when>
+				<when test="searchParam.orderFlag eq 'p'.toString()">
+					cast(productPrice as unsigned) ${searchParam.orderKind}, productName
+				</when>
+				<when test="searchParam.orderFlag eq 'q'.toString()">
+					totalSalesQuantity ${searchParam.orderKind}, productName
+				</when>
+				<when test="searchParam.orderFlag eq 'r'.toString()">
+					totalSalesRevenue ${searchParam.orderKind}, productName
+				</when>
+				<when test="searchParam.orderFlag eq 'u'.toString()">
+					updateDate ${searchParam.orderKind}, productName
+				</when>
+				<otherwise>
+					productName ASC
+				</otherwise>
+			</choose>
+		</if> 
 	</select>
 	
 	<select id="getProductSalesByProductId" parameterType="com.oneblocks.parameter.CampaignListSearchParam" resultType="com.oneblocks.vo.ProductSalesVO">
@@ -73,7 +98,29 @@
 					AND (PS.PSALES_ID BETWEEN '' AND '')
 				</otherwise>
 			</choose>
-	 	ORDER BY UPDATEDATE DESC
+	 	ORDER BY 
+		<if test="!searchParam.orderFlag.equals('') and searchParam.orderFlag!=null">
+			<choose>
+				<when test="searchParam.orderFlag eq 'c'.toString()">
+					productName ${searchParam.orderKind}
+				</when>
+				<when test="searchParam.orderFlag eq 'p'.toString()">
+					cast(productPrice as unsigned) ${searchParam.orderKind}, productName
+				</when>
+				<when test="searchParam.orderFlag eq 'q'.toString()">
+					totalSalesQuantity ${searchParam.orderKind}, productName
+				</when>
+				<when test="searchParam.orderFlag eq 'r'.toString()">
+					totalSalesRevenue ${searchParam.orderKind}, productName
+				</when>
+				<when test="searchParam.orderFlag eq 'u'.toString()">
+					updateDate ${searchParam.orderKind}, productName
+				</when>
+				<otherwise>
+					productName ASC
+				</otherwise>
+			</choose>
+		</if>
 	</select>
 	
 </mapper>

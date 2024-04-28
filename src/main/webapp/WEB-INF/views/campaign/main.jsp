@@ -22,6 +22,8 @@
 				
 				<input type="hidden" id="campaignId" value=""/>
 				<input type="hidden" id="productId" value=""/>
+				<input type="hidden" id="orderFlag" value="c"/>
+				<input type="hidden" id="orderKind" value="ASC"/>
 				
 				<div class="custom-float-right">
 
@@ -34,7 +36,14 @@
 			</div>
 
 			<div class="datatable-container" id="campaignTableDiv">
-		
+			</div>
+			<div class="datatable-container">
+				<table class="table table-hover table-main">
+					<thead id="tableHead">
+					</thead>
+					<tbody id="tableBody" class="table-group-divider">
+					</tbody>
+				</table>
 			</div>
 		<div class="datatable-bottom">
 			<div class="center custom-float-none" id="paginationDiv">
@@ -43,25 +52,20 @@
 		</div>
 	</div>
 </div>
+<script id="campaignTableHeadTemplate" type="x-tmpl-mustache">
+<tr>
+	<th scope="col"><input type="checkbox" name="campaignChk" id="campaignChk" value=""></th>
+{{#campaignHead}}
+	<th scope="col"><a href="javascript:void(0);" onclick="" class="datatable-sorter">{{headName}} {{#orderIcon}}<i class="fa-solid {{orderClass}}"></i>{{/orderIcon}}</a></th>
+{{/campaignHead}}
+</tr>
+</script>
 
-<script id="campaignTableTemplate" type="x-tmpl-mustache">
-<table class="table table-hover table-main">
-	<thead>
-		<tr>
-			<th scope="col"><input type="checkbox" name="campaignChk" id="campaignChk" value=""></th>
-			<th scope="col"><a href="#" class="datatable-sorter" data-value="c" data-order="A" >캠페인명 <i class="fa-solid fa-sort-up"></i></a></th>
-			<th scope="col"><a href="#" class="datatable-sorter" data-value="o" >On/Off</a></th>
-			<th scope="col"><a href="#" class="datatable-sorter" data-value="p">판매가</a></th>
-			<th scope="col"><a href="#" class="datatable-sorter" data-value="q">판매수량</a></th>
-			<th scope="col"><a href="#" class="datatable-sorter" data-value="r">매출액</a></th>
-			<th scope="col"><a href="#" class="datatable-sorter" data-value="u">업데이트</a></th>
-		</tr>
-  	</thead>
-	<tbody class="table-group-divider">
+<script id="campaignTableBodyTemplate" type="x-tmpl-mustache">
 {{#salesList}}
 <tr data-index="0" {{^onOffYn}} style ="--bs-table-bg: #EEF1F4;"{{/onOffYn}} >
 	<td><input type='checkbox' name='campaignId' value='{{campaignId}}'/></td>
-	<td><a href="javascript:void(0);" onclick="productList('{{campaignId}}'); return false;">{{memberCampaignName}}</a></td>
+	<td><a href="javascript:void(0);" onclick="productListInit('{{campaignId}}','date','1',''); return false;">{{memberCampaignName}}</a></td>
 	{{#onOffYn}} 
 		<td>
 			<svg class="svg-inline--fa fa-toggle-on" name="toggleOnOff" value='{{campaignId}}' aria-hidden="true" data-prefix="fas" data-icon="toggle-on" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" data-fa-i2svg="" style="color: #F6BE2C; font-size: 25px; cursor:pointer;">
@@ -88,29 +92,23 @@
 <tr data-index="0" class="center"> 
 	<td colspan="7">조회할 데이터가 없습니다.</td>
 </tr>
-{{/salesList}}	  
-	</tbody>
-</table>
+{{/salesList}}
 </script>
 
-<script id="productTableTemplate" type="x-tmpl-mustache">
-<table class="table table-hover table-main">
-	<thead>
-		<tr>
-			<th scope="col"><input type="checkbox" name="campaignChk" id="campaignChk" value=""></th>
-			<th scope="col"><a href="#" class="datatable-sorter" data-value="c" data-order="A" >옵션명 <i class="fa-solid fa-sort-up"></i></a></th>
-			<th scope="col"><a href="#" class="datatable-sorter" data-value="o" >On/Off</a></th>
-			<th scope="col"><a href="#" class="datatable-sorter" data-value="p">판매가</a></th>
-			<th scope="col"><a href="#" class="datatable-sorter" data-value="q">판매수량</a></th>
-			<th scope="col"><a href="#" class="datatable-sorter" data-value="r">매출액</a></th>
-			<th scope="col"><a href="#" class="datatable-sorter" data-value="u">업데이트</a></th>
-		</tr>
-  	</thead>
-	<tbody class="table-group-divider">
+<script id="productTableHeadTemplate" type="x-tmpl-mustache">
+<tr>
+	<th scope="col"><input type="checkbox" name="campaignChk" id="campaignChk" value=""></th>
+{{#productHead}}
+	<th scope="col"><a href="javascript:void(0);" onclick="productListInit('','date','1','{{orderFlag}}'); return false;" class="datatable-sorter">{{headName}} {{#orderIcon}}<i class="fa-solid {{orderClass}}"></i>{{/orderIcon}}</a></th>
+{{/productHead}}
+</tr>
+</script>
+
+<script id="productTableBodyTemplate" type="x-tmpl-mustache">
 {{#salesList}}
 <tr data-index="0" {{^onOffYn}} style ="--bs-table-bg: #EEF1F4;"{{/onOffYn}} >
 	<td><input type='checkbox' name='productId' value='{{productId}}'/></td>
-	<td><a href="javascript:void(0);" onclick="productDetail('{{productId}}'); return false;" >{{productName}}</a></td>
+	<td><a href="javascript:void(0);" onclick="productDetailInit('{{productId}}','date','1',''); return false;" >{{productName}}</a></td>
 	{{#onOffYn}} 
 		<td>
 			<svg class="svg-inline--fa fa-toggle-on" name="toggleOnOff" value='{{productId}}' aria-hidden="true" data-prefix="fas" data-icon="toggle-on" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" data-fa-i2svg="" style="color: #F6BE2C; font-size: 25px; cursor:pointer;">
@@ -138,23 +136,16 @@
 	<td colspan="7">조회할 데이터가 없습니다.</td>
 </tr>
 {{/salesList}}
-	</tbody>
-</table>
 </script>
 
-<script id="productDetailTableTemplate" type="x-tmpl-mustache">
-<table class="table table-hover table-main">
-	<thead>
-		<tr>
-			<th scope="col"><a href="#" class="datatable-sorter" data-value="c" data-order="A" >날짜 <i class="fa-solid fa-sort-up"></i></a></th>
-			<th scope="col"><a href="#" class="datatable-sorter" data-value="o" >성공여부</a></th>
-			<th scope="col"><a href="#" class="datatable-sorter" data-value="p">판매가</a></th>
-			<th scope="col"><a href="#" class="datatable-sorter" data-value="q">판매수량</a></th>
-			<th scope="col"><a href="#" class="datatable-sorter" data-value="r">매출액</a></th>
-			<th scope="col"><a href="#" class="datatable-sorter" data-value="u">업데이트</a></th>
-		</tr>
-  	</thead>
-	<tbody class="table-group-divider">
+<script id="productDetailTableHeadTemplate" type="x-tmpl-mustache">
+<tr>
+{{#productDetailHead}}
+	<th scope="col"><a href="javascript:void(0);" onclick="productDetailInit('','date','1',''); return false;" class="datatable-sorter">{{headName}} {{#orderIcon}}<i class="fa-solid {{orderClass}}"></i>{{/orderIcon}}</a></th>
+{{/productDetailHead}}
+</tr>
+</script>
+<script id="productDetailTableBodyTemplate" type="x-tmpl-mustache">
 {{#salesList}}
 <tr data-index="0" >
 	<td>{{updateDate}}</td>
@@ -170,9 +161,8 @@
 	<td colspan="6">조회할 데이터가 없습니다.</td>
 </tr>
 {{/salesList}}
-	</tbody>
-</table>
 </script>
+
 
 <script id="paginationTemplate" type="x-tmpl-mustache">
 {{#paging}}
