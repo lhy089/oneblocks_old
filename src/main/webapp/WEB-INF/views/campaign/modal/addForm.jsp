@@ -19,7 +19,7 @@
 				<div class="row">
 					<div class="col-md-1 mb-3 width15p">캠페인명</div>
 					<div class="col-md-7 mb-3 width73p">
-						<input type="text" class="form-control" id="campaignName" name="campaignName" placeholder="" value="" required>
+						<input type="text" class="form-control" id="campaignName" name="campaignName" oninput='handleOnInput(this, 30)' value="" required>
 					</div>
 					<div class="col-md-1 mb-3 width12p custom-div2">0/30</div>
 				</div>
@@ -90,6 +90,11 @@
 	<td class="width20p">{{productPrice}}</td>
 </tr>
 {{/optionListData}}
+{{^optionListData}}
+<tr data-index='0'>
+	<td colspan="3">옵션구성이 없는 상품입니다.</td>
+</tr>
+{{/optionListData}}
 </script>
 
 <script id="supplementBodyTemplate" type="x-tmpl-mustache">
@@ -100,6 +105,11 @@
 	</td>
 	<td class="width70p">{{productName}}</td>
 	<td class="width20p">{{productPrice}}</td>
+</tr>
+{{/supplementListData}}
+{{^supplementListData}}
+<tr class="center">
+	<td colspan="3">추가구성상품이 없는 상품입니다.</td>
 </tr>
 {{/supplementListData}}
 </script>

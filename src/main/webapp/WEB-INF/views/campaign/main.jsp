@@ -88,7 +88,12 @@
 	<td>{{totalSalesRevenue}}</td>
 	<td>{{updateDate}}</td>
 </tr>
-{{/salesList}}		  
+{{/salesList}}
+{{^salesList}}
+<tr data-index="0" class="center"> 
+	<td colspan="7">조회할 데이터가 없습니다.</td>
+</tr>
+{{/salesList}}	  
 	</tbody>
 </table>
 </script>
