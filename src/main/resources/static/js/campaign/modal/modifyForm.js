@@ -46,6 +46,12 @@ function modifyCmapaign() {
 				location.reload(true);
 			}
 		},
+		beforeSend:function(){
+        	$('.wrap-loading').removeClass('display-none');
+   	 	},
+    	complete:function(){
+        	$('.wrap-loading').addClass('display-none');
+    	},
 		error: function() 
 		{
 			console.log("AJAX Request 실패");

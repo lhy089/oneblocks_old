@@ -50,6 +50,12 @@ function campaignMainList(param) {
 			$("#pageName").data().value = "CAMPAIGN";
 			
 	    },
+	    beforeSend:function(){
+        	$('.wrap-loading').removeClass('display-none');
+   	 	},
+    	complete:function(){
+        	$('.wrap-loading').addClass('display-none');
+    	},
 	    error: function() 
 		{debugger;
 	       console.log("AJAX Request 실패");

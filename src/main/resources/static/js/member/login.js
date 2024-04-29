@@ -34,6 +34,12 @@ function doLogin() {
 			}
 			
 	    },
+	    beforeSend:function(){
+        	$('.wrap-loading').removeClass('display-none');
+   	 	},
+    	complete:function(){
+        	$('.wrap-loading').addClass('display-none');
+    	},
 	    error: function() 
 		{debugger;
 	       console.log("AJAX Request 실패");

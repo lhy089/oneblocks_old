@@ -65,6 +65,12 @@ function deleteCampaignInfo(campaignIdList) {
 				alert("처리 되었습니다.");
 				location.reload(true);
 			},
+			beforeSend:function(){
+        		$('.wrap-loading').removeClass('display-none');
+	   	 	},
+	    	complete:function(){
+	        	$('.wrap-loading').addClass('display-none');
+	    	},
 			error: function() 
 			{
 				console.log("AJAX Request 실패");
@@ -102,6 +108,12 @@ function toggleProduct(productId, flag, e){ debugger;
 				alert("처리 되었습니다.");
 				productListInit($("#campaignId").val(),'date',$('#pageBtn[class="active"]').data().value,'');
 			},
+			beforeSend:function(){
+	        	$('.wrap-loading').removeClass('display-none');
+	   	 	},
+	    	complete:function(){
+	        	$('.wrap-loading').addClass('display-none');
+	    	},
 			error: function(data) 
 			{
 				console.log("AJAX Request 실패");
@@ -216,6 +228,12 @@ function productList(campaignListSearchParam) {
 			setTemplateView("paginationTemplate", "paginationDiv", paging);
 			
 	    },
+	    beforeSend:function(){
+        	$('.wrap-loading').removeClass('display-none');
+   	 	},
+    	complete:function(){
+        	$('.wrap-loading').addClass('display-none');
+    	},
 	    error: function() 
 		{debugger;
 	       console.log("AJAX Request 실패");
@@ -341,6 +359,12 @@ function productDetail(campaignListSearchParam) {
 			setTemplateView("paginationTemplate", "paginationDiv", paging);
 			
 	    },
+	    beforeSend:function(){
+        	$('.wrap-loading').removeClass('display-none');
+   	 	},
+    	complete:function(){
+        	$('.wrap-loading').addClass('display-none');
+    	},
 	    error: function() 
 		{debugger;
 	       console.log("AJAX Request 실패");
