@@ -38,10 +38,10 @@ import com.oneblocks.utils.PagingUtil;
 import com.oneblocks.utils.SearchUtil;
 import com.oneblocks.vo.NSalesVO;
 import com.oneblocks.vo.ProductSalesVO;
+import com.oneblocks.vo.SortNSalesList;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
@@ -62,7 +62,7 @@ public class CampaignController {
 	
 	@PostMapping("/main")
 	@ResponseBody
-//	@RequestConfiguration
+	@RequestConfiguration
 	@Operation(summary = "메인 화면", description = "캠페인 판매량 화면을 조회한다")
 	public Map<String, Object> main(@RequestBody SearchParam searchParam, HttpSession session) {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
@@ -78,6 +78,9 @@ public class CampaignController {
 		List<NSalesVO> myCampaignList = campaignService.getList(member.getMemberId());
 		
 		List<NSalesVO> salesList = campaignService.getCampaignSalesList(myCampaignList, member.getMemberId(), searchParam);
+		
+		this.campaignSort(salesList, searchParam);
+		
 		// 정렬
 		
 		// 페이징
@@ -92,6 +95,33 @@ public class CampaignController {
 		resultMap.put("salesList", newsListForPaging);
 		 
 		return resultMap;
+	}
+	
+	public void campaignSort(List<NSalesVO> salesList, SearchParam searchParam) {
+		String orderFlag = searchParam.getOrderFlag();
+		String orderKind = searchParam.getOrderKind();
+
+		if("ASC".equals(orderKind)) {
+			switch (orderFlag) {
+				case "c": SortNSalesList.sortNSalesListOrderByMemberCampaignNameAsc(salesList); break;
+				case "o": SortNSalesList.sortNSalesListOrderByOnOffYnAsc(salesList); break;
+				case "p": SortNSalesList.sortNSalesListOrderByCampaignPriceAsc(salesList); break;
+				case "q": SortNSalesList.sortNSalesListOrderByTotalSalesQuantityAsc(salesList); break;
+				case "r": SortNSalesList.sortNSalesListOrderByTotalSalesRevenueAsc(salesList); break;
+				case "u": SortNSalesList.sortNSalesListOrderByUpdateDateAsc(salesList); break;
+				default:SortNSalesList.sortNSalesListOrderByMemberCampaignNameAsc(salesList); break;
+			} 
+		}else if("DESC".equals(orderKind)) {
+			switch (orderFlag) {
+				case "c": SortNSalesList.sortNSalesListOrderByMemberCampaignNameDesc(salesList); break;
+				case "o": SortNSalesList.sortNSalesListOrderByOnOffYnDesc(salesList); break;
+				case "p": SortNSalesList.sortNSalesListOrderByCampaignPriceDesc(salesList); break;
+				case "q": SortNSalesList.sortNSalesListOrderByTotalSalesQuantityDesc(salesList); break;
+				case "r": SortNSalesList.sortNSalesListOrderByTotalSalesRevenueDesc(salesList); break;
+				case "u": SortNSalesList.sortNSalesListOrderByUpdateDateDesc(salesList); break;
+				default:SortNSalesList.sortNSalesListOrderByMemberCampaignNameDesc(salesList); break;
+			} 
+		}
 	}
 	
 	@GetMapping("/modal/addForm")
