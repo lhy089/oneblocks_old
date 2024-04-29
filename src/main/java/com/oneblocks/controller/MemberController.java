@@ -58,4 +58,10 @@ public class MemberController {
 		resultMap.put("resultCode", forward);
 		return resultMap;
 	}
+	
+	@GetMapping("/logout")
+	public String logout(HttpSession session,Model model) {
+		session.invalidate();
+		return "redirect:/";
+	}
 }

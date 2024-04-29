@@ -151,8 +151,8 @@ function pageSelect(pageNum) {
 			dateFlag: $("#dateFlag option:selected").val(),
 			startDate: $("#startDate").val(),
 			endDate: $("#endDate").val(),
-			orderFlag: $('[data-order="ASC"], [data-order="DESC"]').data('value'),
-			orderKind: $('.datatable-sorter').data('order') == 'ASC' ? 'ASC' : 'DESC',
+			orderFlag: $("#orderFlag").val(),
+			orderKind: $("#orderKind").val(),
 			pageNum: pageNum
 		};
 		
@@ -286,10 +286,11 @@ function setProductDetailHeadParam(searchParam) {
 function setProductPage(data) {
 	$("#pageName").text(data.campaign.campaignName);
 	$("#campaignId").val(data.campaign.campaignId);
+	$("#memberCampaignName").val(data.campaign.campaignName);
 	$("#campaignAdd").hide();
 	$("#btnDeleteCampaign").hide();
 	$("#btnModifyCampaign").show();
-	$("#pageRoute").text($("#pageRoute").text() + " / " + data.campaign.campaignName);
+	$("#pageRoute").html('<a href="" id="main2">N 판매량 조회</a>' + " / " + '<a href="javascript:void(0);" onclick="productMain(); return false;">'+$("#pageName").text()+'</a>');
 	$("#pageRoute").show();
 	$("#pageName").data().value = "PRODUCT";
 	$("#orderFlag").val(data.searchParam.orderFlag);
@@ -372,38 +373,10 @@ function productDetail(campaignListSearchParam) {
 	});
 }
 
-function setProductDetailSearchParam(productId, dateFlag){
-	if(productId != null && productId != "") {
-		$("#productId").val(productId);
-	}else {
-		productId = $("#productId").val();	
-	}
-	if(dateFlag == null || dateFlag == '') {
-		dateFlag = "date";
-	}
-	var searchParam = {
-			flag: dateFlag,
-			dateFlag: $("#dateFlag option:selected").val(),
-			startDate: $("#startDate").val(),
-			endDate: $("#endDate").val(),
-			orderFlag: $('[data-order="ASC"], [data-order="DESC"]').data('value'),
-			orderKind: $('.datatable-sorter').data('order') == 'ASC' ? 'ASC' : 'DESC',
-			pageNum: 1
-	};
-	
-	var campaignListSearchParam = {
-		searchParam: searchParam,
-		campaignId: $("#campaignId").val(),
-		productId: productId
-	}
-	
-	return campaignListSearchParam;
-}
-
 function setProductDetailPage(data) {
 	$("#productId").val(data.product.productId);
 	$("#pageName").text(data.product.productName);
-//	$("#pageRoute").text($("#pageRoute").text() + " / " + productName);
+	$("#pageRoute").html('<a href="" id="main2">N 판매량 조회</a>' + " / " + '<a href="javascript:void(0);" onclick="productMain(); return false;">'+$("#memberCampaignName").val()+'</a>' + " / " + '<a href="javascript:void(0);" onclick="productDetailMain(); return false;">' + data.product.productName + '</a>' );
 	$("#pageName").data().value = "DETAIL";
 	$("#orderFlag").val(data.searchParam.orderFlag);
 	$("#orderKind").val(data.searchParam.orderKind);
@@ -419,5 +392,33 @@ function submitExcelForm() { debugger;
 	$("#orderKindForExcel").val($("#orderKind").val());
 	
 	document.excelForm.submit();
+}
+
+function productMain() {
+	productListInit($("#campaignId").val(),'date','1','');
+}
+
+function productDetailMain() {
+	productDetailInit($("#productId").val(),'date','1','');
+}
+
+function campaignListOrder(orderFlag) {
+	var beforeOrderFlag = $("#orderFlag").val();
+	var orderKind = "ASC";
+	if(beforeOrderFlag == orderFlag) {
+		orderKind = $("#orderKind").val() == 'ASC' ? 'DESC' : 'ASC';
+	}
+	
+	var param = {
+		flag: "date",
+		dateFlag: $("#dateFlag option:selected").val(),
+		startDate: $("#startDate").val(),
+		endDate: $("#endDate").val(),
+		orderFlag: orderFlag,
+		orderKind: orderKind,
+		pageNum: 1
+	};
+	
+	campaignMainList(param);
 }
 

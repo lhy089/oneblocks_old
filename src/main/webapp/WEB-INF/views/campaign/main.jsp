@@ -21,6 +21,7 @@
 				<button class="btn" style="border: solid 1px; background-color:#F6BE2C; display:none;" id="btnModifyCampaign" type="button">캠페인설정변경</button>
 				
 				<input type="hidden" id="campaignId" value=""/>
+				<input type="hidden" id="memberCampaignName" value=""/>
 				<input type="hidden" id="productId" value=""/>
 				<input type="hidden" id="orderFlag" value="c"/>
 				<input type="hidden" id="orderKind" value="ASC"/>
@@ -62,7 +63,7 @@
 <tr>
 	<th scope="col"><input type="checkbox" name="campaignChk" id="campaignChk" value="" onclick="campaignCheck()"></th>
 {{#campaignHead}}
-	<th scope="col"><a href="javascript:void(0);" onclick="" class="datatable-sorter">{{headName}} {{#orderIcon}}<i class="fa-solid {{orderClass}}"></i>{{/orderIcon}}</a></th>
+	<th scope="col"><a href="javascript:void(0);" onclick="campaignListOrder('{{orderFlag}}'); return false;" class="datatable-sorter">{{headName}} {{#orderIcon}}<i class="fa-solid {{orderClass}}"></i>{{/orderIcon}}</a></th>
 {{/campaignHead}}
 </tr>
 </script>

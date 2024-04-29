@@ -4,14 +4,20 @@ $(document).ready(function(){
 	})
 });
 
+function logout() {
+	if(confirm("로그아웃 하시겠습니까?")) {
+		location.href="/logout";
+	}
+}
+
 function campaignMainListBySearch(flag) {
 	var param= {
 		flag: flag,
 		dateFlag: $("#dateFlag option:selected").val(),
 		startDate: $("#startDate").val(),
 		endDate: $("#endDate").val(),
-		orderFlag: $('[data-order="A"], [data-order="D"]').data('value'),
-		orderKind: $('.datatable-sorter').data('order') == 'ASC' ? 'ASC' : 'DESC',
+		orderFlag: $("#orderFlag").val(),
+		orderKind: $("#orderKind").val(),
 		pageNum: 1
 	};
 	
@@ -43,6 +49,7 @@ function campaignMainList(param) {
 			setTemplateView("campaignTableHeadTemplate", "tableHead", campaignHead);
 			var salesList = setCampaignTableParam(data.salesList);		
 			setTemplateView("campaignTableBodyTemplate", "tableBody", salesList);
+			setCampaignPage(data);
 			
 			var paging = pasingParam(data.salesList.length, data.paging);
 			setTemplateView("paginationTemplate", "paginationDiv", paging);
@@ -110,6 +117,11 @@ function setCampaignTableParam(salesList) {
 	}
 	salesList = {salesList : salesList};
 	return salesList;
+}
+
+function setCampaignPage(data) {
+	$("#orderFlag").val(data.searchParam.orderFlag);
+	$("#orderKind").val(data.searchParam.orderKind);
 }
 
 function pasingParam(listSize, paging) {

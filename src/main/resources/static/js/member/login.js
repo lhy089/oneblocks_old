@@ -16,6 +16,9 @@ $(document).ready(function(){
 });
 
 function doLogin() {
+	if (window.event.keyCode != 13) {
+		return false;
+	}
 	var memberLoginParam = {
 		email: $("#email").val(),
 		password: $("#password").val()
@@ -31,6 +34,10 @@ function doLogin() {
 		{ 
 			if(data.resultCode == "SUCCESS") {
 				location.href="/campaign/main";
+			}else {
+				alert("로그인에 실패했습니다. 다시 로그인해 주세요.");
+				$(".login-input").val('');
+				$("#email").focus();
 			}
 			
 	    },

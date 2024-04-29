@@ -9,7 +9,7 @@
     	<div class="collapse navbar-collapse" id="navbarSupportedContent">
       		<ul class="navbar-nav me-auto mb-2 mb-lg-0">
  			</ul>
-			<a id="logout" href="javascript:void(0);">로그아웃</a>
+			<a id="logout" href="javascript:void(0);" onclick="logout(); return false;">로그아웃</a>
     	</div>
   	</div>
 </nav>
