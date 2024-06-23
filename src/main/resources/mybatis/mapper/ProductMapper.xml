@@ -24,4 +24,8 @@
   			1=1 
   			AND P.PRODUCT_ID=#{productId}
 	</select>
+	
+	<select id="getProductIdList" resultType="String"> 
+		SELECT PRODUCT_ID FROM PRODUCT WHERE CAMPAIGN_ID = #{campaignId}
+	</select>
 </mapper>

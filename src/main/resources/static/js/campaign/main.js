@@ -10,7 +10,6 @@ $(document).ready(function(){
 	$("#btnModifyCampaign").click(function() {
 		modifyCampaign($("#campaignId").val());
 	})
-	
 	campaignMainListInit();
 });
 
@@ -129,7 +128,7 @@ function modifyCampaign(campaignId) {
 	
 	
 // 최초진입, 새로고침
-function campaignMainListInit() {
+function campaignMainListInit() { debugger;
 	var param = {
 			flag: "select",
 			dateFlag: "yesterday",
@@ -137,7 +136,8 @@ function campaignMainListInit() {
 			endDate: null,
 			orderFlag: 'c',
 			orderKind: 'ASC',
-			pageNum: 1
+			pageNum: 1,
+			initYn: 'Y'
 	};
 	
 	campaignMainList(param);
@@ -210,18 +210,16 @@ function productList(campaignListSearchParam) {
 		contentType : 'application/json',
 		dataType : 'json',
 	    success: function(data) 
-		{ debugger;
-		
+		{ 
+			
+			setNumber(data);
 			// search 바 세팅
 			var searchParam = setResutlSearchParam(data.searchParam);
 			setTemplateView("productSearchTemplate", "searchDiv", searchParam);
-					debugger;
+
 			// 메인 테이블 세팅
-			var productHead = setProductHeadParam(data.searchParam);		
-			setTemplateView("productTableHeadTemplate", "tableHead", productHead);
-			
 			var salesList = setCampaignTableParam(data.salesList);		
-			setTemplateView("productTableBodyTemplate", "tableBody", salesList);
+			setTemplateView("productTableTemplate", "campaignTableDiv", salesList);
 			setProductPage(data);
 	
 			var paging = pasingParam(data.salesList.length, data.paging);
@@ -295,6 +293,7 @@ function setProductPage(data) {
 	$("#pageName").data().value = "PRODUCT";
 	$("#orderFlag").val(data.searchParam.orderFlag);
 	$("#orderKind").val(data.searchParam.orderKind);
+	setOrderIcon(data);
 }
 
 function productDetailInit(productId, flag, pageNum, orderFlag) {
@@ -344,16 +343,14 @@ function productDetail(campaignListSearchParam) {
 	    success: function(data) 
 		{ debugger;
 		
+			setNumber(data);
 			// search 바 세팅
 			var searchParam = setResutlSearchParam(data.searchParam);
 			setTemplateView("productDetailSearchTemplate", "searchDiv", searchParam);
 					
 			// 메인 테이블 세팅
-			var productDetailHead = setProductDetailHeadParam(data.searchParam);		
-			setTemplateView("productDetailTableHeadTemplate", "tableHead", productDetailHead);
-			
 			var salesList = setCampaignTableParam(data.salesList);		
-			setTemplateView("productDetailTableBodyTemplate", "tableBody", salesList);
+			setTemplateView("productDetailTableTemplate", "campaignTableDiv", salesList);
 			setProductDetailPage(data);
 			
 			var paging = pasingParam(data.salesList.length, data.paging);
@@ -380,16 +377,20 @@ function setProductDetailPage(data) {
 	$("#pageName").data().value = "DETAIL";
 	$("#orderFlag").val(data.searchParam.orderFlag);
 	$("#orderKind").val(data.searchParam.orderKind);
+	
+	setOrderIcon(data);
 }
 
 function submitExcelForm() { debugger;
-	$("#pageNameForExcel").val($("#pageName").val());
+	$("#pageNameForExcel").val($("#pageName").text().replaceAll("/",","));
 	$("#campaignIdForExcel").val($("#campaignId").val());
 	$("#productIdForExcel").val($("#productId").val());
 	$("#startDateForExcel").val($("#startDate").val());
 	$("#endDateForExcel").val($("#endDate").val());
 	$("#orderFlagForExcel").val($("#orderFlag").val());
 	$("#orderKindForExcel").val($("#orderKind").val());
+	
+	document.excelForm.action = "/campaign/excel/download/"+ $("#pageName").data().value.toLowerCase();
 	
 	document.excelForm.submit();
 }
@@ -422,3 +423,10 @@ function campaignListOrder(orderFlag) {
 	campaignMainList(param);
 }
 
+function setNumber(data) {
+	$.each(data.salesList, function(index, option) {
+		option.productPrice = option.productPrice == '-9999' ? "-" : Number(option.productPrice).toLocaleString('ko-KR');
+		option.totalSalesQuantity = option.totalSalesQuantity == '-9999' ? "-" : Number(option.totalSalesQuantity).toLocaleString('ko-KR');
+		option.totalSalesRevenue = option.totalSalesRevenue == '-9999' ? "-" : Number(option.totalSalesRevenue).toLocaleString('ko-KR');
+	});
+}

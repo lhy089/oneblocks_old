@@ -25,7 +25,7 @@
 		 	</div>
 		 	<div class="login-item">
 		 		<p class="login-label">Password</p>
-		 		<input onkeyup="doLogin()" type="password" name="password" id="password" class="login-input" autocomplete="off"/>
+		 		<input onkeyup="doLoginByEnter()" type="password" name="password" id="password" class="login-input" autocomplete="off"/>
 		 	</div>
 		 	
 		 	<div class="login-sub-item">

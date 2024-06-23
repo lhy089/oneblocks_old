@@ -27,10 +27,10 @@
 				FROM MEMBER_PRODUCT MP 
 				WHERE MEMBER_Id= #{memberId} 
 					AND MP.PRODUCT_ID = P.PRODUCT_ID) 	as onOffYn
-			, IFNULL(PS.SALES_PRICE,'-')				as productPrice
-			, IFNULL(SUM(PS.SALES_QUANTITY),'-')		as totalSalesQuantity
-			, IFNULL(SUM(PS.REVENUE),'-')				as totalSalesRevenue
-			, IFNULL(MAX(UPDATE_DATE),'-')				as updateDate
+			, IFNULL(PS.SALES_PRICE,-9999)				as productPrice
+			, IFNULL(SUM(PS.SALES_QUANTITY),-9999)		as totalSalesQuantity
+			, IFNULL(SUM(PS.REVENUE),-9999)				as totalSalesRevenue
+			, IFNULL(MAX(UPDATE_DATE),-9999)				as updateDate
 	FROM PRODUCT P
 	LEFT JOIN PRODUCT_SALES PS ON P.PRODUCT_ID = PS.PRODUCT_ID
 		<choose>
@@ -80,10 +80,10 @@
 		SELECT 
 			PS.PRODUCT_ID		 					AS productId
 			, (SELECT PRODUCT_NAME FROM PRODUCT WHERE PRODUCT_ID=#{productId}) AS productName
-			, IFNULL(PS.SALES_PRICE,'-')			AS productPrice
-			, IFNULL(PS.SALES_QUANTITY,'-')	 		AS totalSalesQuantity
-			, IFNULL(PS.REVENUE,'-')				AS totalSalesRevenue
-			, IFNULL(PS.UPDATE_DATE,'-') 			AS updateDate
+			, IFNULL(PS.SALES_PRICE,-9999)			AS productPrice
+			, IFNULL(PS.SALES_QUANTITY,-9999)	 		AS totalSalesQuantity
+			, IFNULL(PS.REVENUE,-9999)				AS totalSalesRevenue
+			, IFNULL(PS.UPDATE_DATE,-9999) 			AS updateDate
 	 	FROM PRODUCT_SALES PS 
 		WHERE 1=1
 	 		AND PS.PRODUCT_ID = #{productId}
@@ -122,5 +122,30 @@
 			</choose>
 		</if>
 	</select>
+	
+	<select id="getDayBeforeYesterdayCampaignStockQuantity"  parameterType="map" resultType="String">
+		SELECT 
+			STOCK_QUANTITY
+		FROM CAMPAIGN_SALES
+		WHERE CAMPAIGN_ID = #{campaignId}
+			AND SALES_ID = #{dayBeforeYesterday}
+	</select>
+	
+	<select id="getDayBeforeYesterdayProductStockQuantity" parameterType="map" resultType="String">
+		SELECT 
+			STOCK_QUANTITY  
+		FROM PRODUCT_SALES
+		WHERE PRODUCT_ID = #{productId}
+			AND PSALES_ID = #{dayBeforeYesterday}
+	</select>
+	
+	<insert id="insertProductSalesInfo" parameterType="java.util.List">
+		INSERT INTO PRODUCT_SALES
+			(PSALES_ID, PRODUCT_ID, SALES_PRICE, SALES_QUANTITY, REVENUE, STOCK_QUANTITY, UPDATE_DATE)
+		VALUES
+		<foreach collection="list" item="item" index="i" separator="," >
+				(#{item.psalesId}, #{item.productId}, #{item.salesPrice}, #{item.salesQuantity}, #{item.revenue}, #{item.stockQuantity}, now())		
+		</foreach>
+	</insert>
 	
 </mapper>

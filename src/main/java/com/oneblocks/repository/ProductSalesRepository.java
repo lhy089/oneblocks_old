@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.springframework.stereotype.Repository;
 
+import com.oneblocks.domain.ProductSales;
 import com.oneblocks.parameter.CampaignListSearchParam;
 import com.oneblocks.vo.NSalesVO;
 import com.oneblocks.vo.ProductSalesVO;
@@ -17,4 +18,10 @@ public interface ProductSalesRepository {
 	List<ProductSalesVO> getProductSalesList(CampaignListSearchParam campaignListSearchParam);
 	
 	List<ProductSalesVO> getProductSalesByProductId(CampaignListSearchParam campaignListSearchParam);
+	
+	String getDayBeforeYesterdayCampaignStockQuantity(Map<String, String> data);
+	
+	String getDayBeforeYesterdayProductStockQuantity(Map<String, String> data);
+	
+	int insertProductSalesInfo(List<ProductSales> productSalesInfo);
 }

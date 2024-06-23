@@ -1,5 +1,7 @@
 package com.oneblocks.repository;
 
+import java.util.List;
+
 import org.springframework.stereotype.Repository;
 
 import com.oneblocks.domain.Campaign;
@@ -13,5 +15,7 @@ public interface CampaignRepository {
 	Campaign getCampaignInfo(Campaign campaign);
 	
 	void insertCampaignInfo(Campaign campaign);
+	
+	List<String> getCampaignUrlList();
 
 }

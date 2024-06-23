@@ -5,14 +5,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.oneblocks.domain.Campaign;
+import com.oneblocks.domain.CampaignSales;
 import com.oneblocks.domain.MemberCampaign;
 import com.oneblocks.domain.MemberCampaignHis;
 import com.oneblocks.domain.MemberProduct;
 import com.oneblocks.domain.Product;
+import com.oneblocks.domain.ProductSales;
 import com.oneblocks.parameter.CampaignFormParam;
 import com.oneblocks.parameter.CampaignListSearchParam;
 import com.oneblocks.parameter.CampaignModifyParam;
@@ -24,6 +28,7 @@ import com.oneblocks.repository.MemberCampaignRepository;
 import com.oneblocks.repository.MemberProductRepository;
 import com.oneblocks.repository.ProductRepository;
 import com.oneblocks.repository.ProductSalesRepository;
+import com.oneblocks.utils.CommonUtil;
 import com.oneblocks.vo.NSalesVO;
 import com.oneblocks.vo.ProductSalesVO;
 
@@ -65,9 +70,9 @@ public class CampaignService {
 			
 			// 1. price 가 없는 경우 > sales 데이터가 세티되지 않음.
 			if(StringUtils.isEmpty(salesInfo.getCampaignPrice())) {
-				salesInfo.setCampaignPrice("-");
-				salesInfo.setTotalSalesQuantity("-");
-				salesInfo.setTotalSalesRevenue("-");
+				salesInfo.setCampaignPrice("-9999");
+				salesInfo.setTotalSalesQuantity("-9999");
+				salesInfo.setTotalSalesRevenue("-9999");
 				salesInfo.setUpdateDate("-");
 				continue;
 			}
@@ -81,6 +86,7 @@ public class CampaignService {
 			if(onDateList.size() == 0) {
 				salesInfo.setCampaignPrice("0");
 				salesInfo.setTotalSalesQuantity("0");
+				salesInfo.setTotalSalesRevenue("0");
 				continue;
 			}
 			
@@ -324,6 +330,135 @@ public class CampaignService {
 		memberProduct.setProductId(memberProduct.getProductId());
 		memberProduct.setOnOffYn(memberProduct.getOnOffYn()); 
 		memberProductRepository.modifyProductStatus(memberProduct);
+	}
+	
+	public List<String> getCampaignUrlList() {
+		return campaignRepository.getCampaignUrlList();
+		
+	}
+	
+	public void saveProductSalesInfo(JSONObject campaignData) {
+		String campaignId = String.valueOf(campaignData.get("id"));
+		String yesterday = CommonUtil.getBeforeDate(1); // 어제
+	
+		// 그저께 재고량
+		Map<String, String> stockQuantityMap = this.getStockQuantityFromDayBeforeYesterday(campaignId);
+		
+		// campaign sales insert
+		this.setCampaignSalesInfo(campaignId, campaignData, stockQuantityMap.get(campaignId), yesterday);
+		// product sales insert
+		this.setProductSalesInfo(campaignId, campaignData, stockQuantityMap, yesterday);		
+	}
+	
+	public Map<String, String> getStockQuantityFromDayBeforeYesterday(String campaignId) {
+		Map<String, String> stockQuantityMap = new HashMap<String,String>();
+		Map<String, String> data = new HashMap<String,String>();
+		data.put("campaignId", campaignId);
+		data.put("dayBeforeYesterday", CommonUtil.getBeforeDate(2));
+		stockQuantityMap.put(campaignId, productSalesRepository.getDayBeforeYesterdayCampaignStockQuantity(data));
+		List<String> saveProductIdList = productRepository.getProductIdList(campaignId);
+		
+		for(String saveProductId : saveProductIdList) {
+			data.put("productId", saveProductId);
+			stockQuantityMap.put(saveProductId, productSalesRepository.getDayBeforeYesterdayProductStockQuantity(data));
+		}
+		return stockQuantityMap;
+	}
+	
+	public void setCampaignSalesInfo(String campaignId, JSONObject campaignData, String lastStockQuantity, String salesId) {
+		int stockQuantity = (Integer) campaignData.get("stockQuantity");
+		int salesQuantity = 0;
+		int revenue = 0;
+		
+		int campaignSalesPrice = (Integer) campaignData.get("discountedSalePrice");
+
+		CampaignSales campaignSales = new CampaignSales();
+		campaignSales.setSalesId(salesId);
+		campaignSales.setCampaignId(campaignId);
+		campaignSales.setCampaignPrice(campaignSalesPrice);
+		if(lastStockQuantity != null) {
+			salesQuantity = Integer.parseInt(lastStockQuantity) - stockQuantity;
+			revenue = salesQuantity * campaignSalesPrice;
+		}
+		campaignSales.setSalesQuantity(salesQuantity);
+		campaignSales.setRevenue(revenue);
+		campaignSales.setStockQuantity(stockQuantity);
+		campaignSalesRepository.insertCampaignSalesInfo(campaignSales);
+	}
+	
+	public void setProductSalesInfo(String campaignId, JSONObject campaignData, Map<String, String> stockQuantityMap, String salesId) {
+		// 최종 insert date
+		List<ProductSales> newProductSalesList = new ArrayList<ProductSales>();
+		// 추출데이터 optiondata, supplementdata, campaignid
+		
+		Boolean optionUsable = (Boolean) campaignData.get("optionUsable");
+		Boolean supplementUsable = (Boolean) campaignData.get("supplementProductUsable");		
+		int campaignSalesPrice = (Integer) campaignData.get("discountedSalePrice");
+		
+		if(optionUsable) {
+			JSONArray optionData = (JSONArray) campaignData.get("optionCombinations");
+			for(int i=0; i<optionData.length(); i++){
+
+				JSONObject item = (JSONObject) optionData.get(i);
+				String productId = String.valueOf(item.get("id"));
+				String lastStockQuantity = stockQuantityMap.get(productId);
+				int salesQuantity = 0;
+				int revenue = 0;
+				int salesPrice = (Integer) item.get("price");
+				int stockQuantity = (Integer) item.get("stockQuantity"); 
+				
+				productId = String.valueOf(item.get("id"));
+				salesPrice = campaignSalesPrice + (Integer) item.get("price");
+				stockQuantity = (Integer) item.get("stockQuantity"); 
+				
+				if(lastStockQuantity != null) {
+					salesQuantity = Integer.parseInt(lastStockQuantity) - stockQuantity;
+					revenue = salesQuantity * salesPrice;
+				}
+			
+				ProductSales productSalesInfo = new ProductSales();
+				productSalesInfo.setPsalesId(salesId);
+				productSalesInfo.setProductId(productId);
+				productSalesInfo.setSalesPrice(String.valueOf(salesPrice));
+				productSalesInfo.setSalesQuantity(salesQuantity);
+				productSalesInfo.setRevenue(revenue);
+				productSalesInfo.setStockQuantity(stockQuantity);
+				newProductSalesList.add(productSalesInfo);
+			}
+		}
+		
+		if(supplementUsable) {
+			JSONArray supplementData = (JSONArray) campaignData.get("supplementProducts");
+			for(int i=0; i<supplementData.length(); i++){ 
+				JSONObject item = (JSONObject) supplementData.get(i);
+				String productId = String.valueOf(item.get("id"));
+				String lastStockQuantity = stockQuantityMap.get(productId);
+				int salesQuantity = 0;
+				int revenue = 0;
+				int salesPrice = (Integer) item.get("price");
+				int stockQuantity = (Integer) item.get("stockQuantity"); 
+				
+				if(lastStockQuantity != null) {
+					salesQuantity = Integer.parseInt(lastStockQuantity) - stockQuantity;
+					revenue = salesQuantity * salesPrice;
+				}
+			
+				ProductSales productSalesInfo = new ProductSales();
+				productSalesInfo.setPsalesId(salesId);
+				productSalesInfo.setProductId(productId);
+				productSalesInfo.setSalesPrice(String.valueOf(salesPrice));
+				productSalesInfo.setSalesQuantity(salesQuantity);
+				productSalesInfo.setRevenue(revenue);
+				productSalesInfo.setStockQuantity(stockQuantity);
+				newProductSalesList.add(productSalesInfo);
+			}
+		}
+		
+		if(newProductSalesList.size() > 0) {
+
+			int cnt = productSalesRepository.insertProductSalesInfo(newProductSalesList);
+			System.out.println(cnt);
+		}
 	}
 	
 }

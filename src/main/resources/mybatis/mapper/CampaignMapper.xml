@@ -35,5 +35,13 @@
 			VALUES 
 			(#{campaignId}, #{campaignName}, #{campaignUrl}, #{optionCnt}, #{supplementCnt}, now())
 	</insert>
+	
+	<select id="getCampaignUrlList" resultType="String">
+		SELECT 	DISTINCT C.CAMPAIGN_URL 
+		FROM 	CAMPAIGN C
+		LEFT JOIN MEMBER_CAMPAIGN MC ON C.CAMPAIGN_ID = MC.CAMPAIGN_ID
+		WHERE 	1 = 1
+		AND 	MC.ON_OFF_YN='Y'
+	</select>
 
 </mapper>

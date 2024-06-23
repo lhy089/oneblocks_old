@@ -15,10 +15,15 @@ $(document).ready(function(){
    });
 });
 
-function doLogin() {
+function doLoginByEnter() {
 	if (window.event.keyCode != 13) {
 		return false;
 	}
+	doLogin() ;
+}
+
+function doLogin() {
+	
 	var memberLoginParam = {
 		email: $("#email").val(),
 		password: $("#password").val()

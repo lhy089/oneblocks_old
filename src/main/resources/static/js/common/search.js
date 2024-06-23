@@ -40,15 +40,15 @@ function campaignMainList(param) {
 				var myCampaignList = setCampaignListParam(data.myCampaignList);
 				setTemplateView("leftTemplate", "campaignNameList", myCampaignList);
 			}
+			
+			setNumber(data);
 			// search 바 세팅
 			var searchParam = setResutlSearchParam(data.searchParam);
 			setTemplateView("searchTemplate", "searchDiv", searchParam);
-					
+	
 			// 메인 테이블 세팅
-			var campaignHead = setCampaignHeadParam(data.searchParam);		
-			setTemplateView("campaignTableHeadTemplate", "tableHead", campaignHead);
 			var salesList = setCampaignTableParam(data.salesList);		
-			setTemplateView("campaignTableBodyTemplate", "tableBody", salesList);
+			setTemplateView("campaignTableTemplate", "campaignTableDiv", salesList);
 			setCampaignPage(data);
 			
 			var paging = pasingParam(data.salesList.length, data.paging);
@@ -119,9 +119,22 @@ function setCampaignTableParam(salesList) {
 	return salesList;
 }
 
-function setCampaignPage(data) {
+function setCampaignPage(data) { debugger;
 	$("#orderFlag").val(data.searchParam.orderFlag);
 	$("#orderKind").val(data.searchParam.orderKind);
+	
+	setOrderIcon(data);
+}
+
+function setOrderIcon(data) {
+	
+	$('.datatable-sorter').children('svg').remove();
+	var orderIcon = data.searchParam.orderKind=="ASC" ? 
+	' <svg class="svg-inline--fa fa-sort-up" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="sort-up" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" data-fa-i2svg=""><path fill="currentColor" d="M182.6 41.4c-12.5-12.5-32.8-12.5-45.3 0l-128 128c-9.2 9.2-11.9 22.9-6.9 34.9s16.6 19.8 29.6 19.8H288c12.9 0 24.6-7.8 29.6-19.8s2.2-25.7-6.9-34.9l-128-128z"></path></svg>'
+	: ' <svg class="svg-inline--fa fa-sort-down" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="sort-down" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" data-fa-i2svg=""><path fill="currentColor" d="M182.6 470.6c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-9.2-9.2-11.9-22.9-6.9-34.9s16.6-19.8 29.6-19.8H288c12.9 0 24.6 7.8 29.6 19.8s2.2 25.7-6.9 34.9l-128 128z"></path></svg>';
+	
+	$('[data-value="'+data.searchParam.orderFlag+'"]').append(orderIcon);
+	
 }
 
 function pasingParam(listSize, paging) {
@@ -168,4 +181,13 @@ function chageEndDate() {
 	$("#dateFlag").val("none");
 	$("#flag").val("date");
 	$("#searchForm").submit();
+}
+
+function setNumber(data) { debugger;
+	$.each(data.salesList, function(index, option) {
+		option.campaignPrice = option.campaignPrice == '-9999' ? "-" : Number(option.campaignPrice).toLocaleString('ko-KR');
+		option.productPrice = option.productPrice == '-9999' ? "-" : Number(option.productPrice).toLocaleString('ko-KR');
+		option.totalSalesQuantity = option.totalSalesQuantity == '-9999' ? "-" : Number(option.totalSalesQuantity).toLocaleString('ko-KR');
+		option.totalSalesRevenue = option.totalSalesRevenue == '-9999' ? "-" : Number(option.totalSalesRevenue).toLocaleString('ko-KR');
+	});
 }

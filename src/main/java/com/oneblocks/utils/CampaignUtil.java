@@ -36,7 +36,6 @@ public class CampaignUtil {
 				 JSONObject jsonObj=new JSONObject(script);
 				 JSONObject product = (JSONObject) jsonObj.get("product");
 				 String id = (String)((JSONObject) product.get("A")).get("id");
-				 System.out.println("7977012380".equals(id));
 				 result = (JSONObject) product.get("A");
 			 }catch(Exception e) {
 				 e.printStackTrace();

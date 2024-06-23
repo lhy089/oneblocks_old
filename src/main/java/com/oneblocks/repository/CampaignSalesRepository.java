@@ -2,6 +2,7 @@ package com.oneblocks.repository;
 
 import org.springframework.stereotype.Repository;
 
+import com.oneblocks.domain.CampaignSales;
 import com.oneblocks.parameter.CampaignListSearchParam;
 import com.oneblocks.vo.NSalesVO;
 
@@ -9,5 +10,7 @@ import com.oneblocks.vo.NSalesVO;
 public interface CampaignSalesRepository {
 	
 	NSalesVO getMyCampaignSalesInfo(CampaignListSearchParam campaignListSearchParam);
+	
+	int insertCampaignSalesInfo(CampaignSales campaignSalesInfo);
 
 }

@@ -16,5 +16,11 @@
         	</foreach>
 	</select>
 	
+	<insert id="insertCampaignSalesInfo" parameterType="com.oneblocks.domain.CampaignSales">
+		INSERT INTO CAMPAIGN_SALES
+			(SALES_ID, CAMPAIGN_ID, CAMPAIGN_PRICE, STOCK_QUANTITY, UPDATE_DATE)
+		VALUES
+			(#{salesId}, #{campaignId}, #{campaignPrice}, #{stockQuantity}, now())
+	</insert>
 
 </mapper>
