@@ -29,6 +29,7 @@ function getCampaignInfo() {
 		async: true,
 		success: function(data) 
 		{ 
+			setNumber(data);
 			$("input[name='productChk']").prop('checked',false);
 			setData(data);
 			
@@ -62,6 +63,16 @@ function setCampaignUrl() {
 	}
 	
 	return campaignUrl;
+}
+
+function setNumber(data) {
+	$.each(data.optionList, function(index, option) {
+		option.productPrice = option.productPrice == '-9999' ? "-" : Number(option.productPrice).toLocaleString('ko-KR');
+	});
+	
+	$.each(data.supplementList, function(index, option) {
+		option.productPrice = option.productPrice == '-9999' ? "-" : Number(option.productPrice).toLocaleString('ko-KR');
+	});
 }
 
 function setData(data) {
@@ -130,6 +141,14 @@ function setCampaignFormParam() {
 	
 	$.each($("input[name='supplementId']:checked"), function(index, supplement) {
 		productIdList.push(supplement.value);
+	});
+	
+	$.each(optionList, function(index, option) {
+		option.productPrice = option.productPrice.replace(/,/g, '');
+	});
+	
+	$.each(supplementList, function(index, option) {
+		option.productPrice = option.productPrice.replace(/,/g, '');
 	});
 	
 	var campaignFormParam = {
